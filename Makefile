@@ -1,6 +1,6 @@
-z80_srcs = config.c disas.c iosim.c memory.c sim0.c sim1.c sim1a.c sim2.c sim3.c sim4.c sim5.c sim6.c sim7.c simctl.c simfun.c simglb.c simint.c
-z80_hdrs = config.h memory.h simglb.h sim.h 
-gui_srcs = callbacks.c code.c guiglb.c memory.c flags.c log.c ports.c registers.c
+z80_srcs = disas.c iosim.c sim0.c sim1.c sim2.c sim3.c sim4.c sim5.c sim6.c sim7.c simctl.c simfun.c simglb.c simint.c
+z80_hdrs = simglb.h sim.h 
+gui_srcs = callbacks.c code.c guiglb.c mem.c flags.c log.c ports.c registers.c
 gui_hdrs = prototypes.h callbacks.h guiglb.h
 
 z80_objs = $(patsubst %.c,obj/%.o,$(z80_srcs))

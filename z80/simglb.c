@@ -1,7 +1,7 @@
 /*
- * Z80SIM  -  a Z80-CPU simulator
+ * Z80SIM  -  a	Z80-CPU	simulator
  *
- * Copyright (C) 1987-2017 by Udo Munk
+ * Copyright (C) 1987-2008 by Udo Munk
  *
  * History:
  * 28-SEP-87 Development on TARGON/35 with AT&T Unix System V.3
@@ -11,7 +11,7 @@
  * 09-FEB-90 Release 1.4  Ported to TARGON/31 M10/30
  * 20-DEC-90 Release 1.5  Ported to COHERENT 3.0
  * 10-JUN-92 Release 1.6  long casting problem solved with COHERENT 3.2
- *			  and some optimisation
+ *			  and some optimization
  * 25-JUN-92 Release 1.7  comments in english and ported to COHERENT 4.0
  * 02-OCT-06 Release 1.8  modified to compile on modern POSIX OS's
  * 18-NOV-06 Release 1.9  modified to work with CP/M sources
@@ -22,77 +22,44 @@
  * 06-OCT-07 Release 1.14 bug fixes and improvements
  * 06-AUG-08 Release 1.15 many improvements and Windows support via Cygwin
  * 25-AUG-08 Release 1.16 console status I/O loop detection and line discipline
- * 20-OCT-08 Release 1.17 frontpanel integrated and Altair/IMSAI emulations
- * 24-JAN-14 Release 1.18 bug fixes and improvements
- * 02-MAR-14 Release 1.19 source cleanup and improvements
- * 14-MAR-14 Release 1.20 added Tarbell SD FDC and printer port to Altair
- * 29-MAR-14 Release 1.21 many improvements
- * 29-MAY-14 Release 1.22 improved networking and bugfixes
- * 04-JUN-14 Release 1.23 added 8080 emulation
- * 06-SEP-14 Release 1.24 bugfixes and improvements
- * 18-FEB-15 Release 1.25 bugfixes, improvements, added Cromemco Z-1
- * 18-APR-15 Release 1.26 bugfixes and improvements
- * 18-JAN-16 Release 1.27 bugfixes and improvements
- * 05-MAY-16 Release 1.28 improved usability
- * 20-NOV-16 Release 1.29 bugfixes and improvements
- * 15-DEC-16 Release 1.30 improved memory management, machine cycle correct CPUs
- * 28-DEC-16 Release 1.31 improved memory management, reimplemented MMUs
- * 12-JAN-17 Release 1.32 improved configurations, front panel, added IMSAI VIO
- * 07-FEB-17 Release 1.33 bugfixes, improvements, better front panels
- * 16-MAR-17 Release 1.34 improvements, added ProcTec VDM-1
- * 03-AUG-17 Release 1.35 added UNIX sockets, bugfixes, improvements
- * 21-DEC-17 Release 1.36 bugfixes and improvements
  */
 
 /*
- *	This module contains the global variables other than memory management
+ *	This modul contains all the global variables
  */
 
-#include <stddef.h>
 #include "sim.h"
 
-#define MAXCHAN 5	/* max number of channels for I/O busy detect */
-
-/*
- *	Type of CPU, either Z80 or 8080
- */
-int cpu = DEFAULT_CPU;
+#define MAXCHAN	5	/* max number of channel for I/O busy detect */
 
 /*
  *	CPU Registers
  */
-BYTE A,B,C,D,E,H,L;		/* primary registers */
-int  F;				/* normally 8-Bit, but int is faster */
-WORD IX, IY;			/* Z80 index registers */
+BYTE A,B,C,D,E,H,L;		/* Z80 primary registers */
+int  F;				/* normaly 8-Bit, but int is faster */
+WORD IX, IY;
 BYTE A_,B_,C_,D_,E_,H_,L_;	/* Z80 alternate registers */
 int  F_;
-WORD PC;			/* programm counter */
-WORD SP;			/* stackpointer */
+BYTE *PC;			/* Z80 programm counter */
+BYTE *STACK;			/* Z80 stackpointer */
 BYTE I;				/* Z80 interrupt register */
-BYTE IFF;			/* interrupt flags */
+BYTE IFF;			/* Z80 interrupt flags */
 long R;				/* Z80 refresh register */
-				/* is normally a 8 bit register */
-				/* the larger bits are used to measure the */
+				/* is normaly a 8 bit register	*/
+				/* the 32 bits are used to measure the */
 				/* clock frequency */
 
-#ifdef BUS_8080
-BYTE cpu_bus;			/* CPU bus status, for frontpanels */
-int m1_step;			/* flag for waiting at M1 in single step */
+#ifdef BUS_8080			/* CPU bus status, for frontpanels */
+BYTE cpu_bus;
 #endif
 
-BYTE io_port;			/* I/O port used */
-BYTE io_data;			/* data on I/O port */
-int busy_loop_cnt[MAXCHAN];	/* counters for I/O busy loop detection */
+BYTE mem_wp;			/* memory write-protect flag */
 
-BYTE cpu_state;			/* state of CPU emulation */
-int cpu_error;			/* error status of CPU emulation */
-int int_mode;			/* CPU interrupt mode (IM 0, IM 1, IM 2) */
-int int_nmi;			/* non maskable interrupt request */
-int int_int;			/* interrupt request */
-int int_data = -1;		/* data from interrupting device on data bus */
-int int_protection;		/* to delay interrupts after EI */
-BYTE bus_request;		/* request address/data bus from CPU */
-int tmax;			/* max t-states to execute in 10ms */
+/*
+ *	Variables for memory of the emulated CPU
+ */
+BYTE ram[65536];		/* 64KB RAM */
+BYTE *wrk_ram;			/* workpointer into memory for dump etc. */
 
 /*
  *	Variables for history memory
@@ -114,48 +81,52 @@ int sb_next;			/* index into breakpoint memory */
 /*
  *	Variables for runtime measurement
  */
+#ifdef WANT_TIM
 long t_states;			/* number of counted T states */
 int t_flag;			/* flag, 1 = on, 0 = off */
-WORD t_start = 65535;		/* start address for measurement */
-WORD t_end = 65535;		/* end address for measurement */
+BYTE *t_start =	ram + 65535;	/* start address for measurement */
+BYTE *t_end = ram + 65535;	/* end address for measurement */
+#endif
 
 /*
  *	Variables for frontpanel emulation
  */
 #ifdef FRONTPANEL
-unsigned long long fp_clock;	/* simulation clock */
-float fp_fps = 30.0;		/* frame rate, default 30 usually works */
+unsigned long long fp_clock;
 WORD fp_led_address;		/* lights for address bus */
-BYTE fp_led_data;		/* lights for data bus */
-WORD address_switch;		/* address and programmed input switches */
-BYTE fp_led_output = 0xff;	/* IMSAI/Cromemco programmed output, inverted */
+BYTE fp_led_data;		/* ligths for data bus */
 #endif
 
 /*
  *	Flags to control operation of simulation
  */
-int s_flag;			/* flag for -s option */
-int l_flag;			/* flag for -l option */
-int m_flag = -1;		/* flag for -m option */
-int x_flag;			/* flag for -x option */
+int s_flag;			/* flag	for -s option */
+int l_flag;			/* flag	for -l option */
+int m_flag;			/* flag	for -m option */
+int x_flag;			/* flag	for -x option */
 int i_flag;			/* flag for -i option */
 int f_flag;			/* flag for -f option */
 #ifdef Z80_UNDOC
-int u_flag;			/* flag for -u option */
+int z_flag;			/* flag for -z option */
 #endif
+char xfn[LENCMD];		/* buffer for filename (option -x) */
+BYTE cpu_state;			/* status of CPU emulation */
+int cpu_error;			/* error status of CPU emulation */
+int int_type;			/* type	of interrupt */
+int tmax;			/* max t-stats to execute in 10ms */
+int int_mode;			/* CPU interrupt mode (IM 0, IM 1, IM 2) */
+int cntl_c;			/* flag	for cntl-c entered */
+int cntl_bs;			/* flag	for cntl-\ entered */
 
 /*
- *	Variables for configuration and disk images
+ *	Variables for I/O support
  */
-char xfn[4096];			/* buffer for filename (option -x) */
-char *diskdir = NULL;		/* path for disk images (option -d) */
-char diskd[4096];		/* disk image directory in use */
-char confdir[4096];		/* path for configuration files */
+int busy_loop_cnt[MAXCHAN];	/* counters for I/O busy loop detection */
 
 /*
- *	Precompiled table to get parity as fast as possible
+ *	Table to get parrity as fast as possible
  */
-int parity[256] = {
+int parrity[256] = {
 		0 /* 00000000 */, 1 /* 00000001	*/, 1 /* 00000010 */,
 		0 /* 00000011 */, 1 /* 00000100	*/, 0 /* 00000101 */,
 		0 /* 00000110 */, 1 /* 00000111	*/, 1 /* 00001000 */,
