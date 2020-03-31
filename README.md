@@ -1,1 +1,1 @@
-# z80simgui
+# z80sim
