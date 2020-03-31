@@ -1,7 +1,7 @@
 /*
- * Z80SIM  -  a Z80-CPU simulator
+ * Z80SIM  -  a	Z80-CPU	simulator
  *
- * Copyright (C) 1987-2017 by Udo Munk
+ * Copyright (C) 1987-2008 by Udo Munk
  *
  * This modul contains the user interface, a full qualified ICE,
  * for the Z80-CPU simulation.
@@ -14,7 +14,7 @@
  * 09-FEB-90 Release 1.4  Ported to TARGON/31 M10/30
  * 20-DEC-90 Release 1.5  Ported to COHERENT 3.0
  * 10-JUN-92 Release 1.6  long casting problem solved with COHERENT 3.2
- *			  and some optimisation
+ *			  and some optimization
  * 25-JUN-92 Release 1.7  comments in english and ported to COHERENT 4.0
  * 02-OCT-06 Release 1.8  modified to compile on modern POSIX OS's
  * 18-NOV-06 Release 1.9  modified to work with CP/M sources
@@ -25,30 +25,10 @@
  * 06-OCT-07 Release 1.14 bug fixes and improvements
  * 06-AUG-08 Release 1.15 many improvements and Windows support via Cygwin
  * 25-AUG-08 Release 1.16 console status I/O loop detection and line discipline
- * 20-OCT-08 Release 1.17 frontpanel integrated and Altair/IMSAI emulations
- * 24-JAN-14 Release 1.18 bug fixes and improvements
- * 02-MAR-14 Release 1.19 source cleanup and improvements
- * 14-MAR-14 Release 1.20 added Tarbell SD FDC and printer port to Altair
- * 29-MAR-14 Release 1.21 many improvements
- * 29-MAY-14 Release 1.22 improved networking and bugfixes
- * 04-JUN-14 Release 1.23 added 8080 emulation
- * 06-SEP-14 Release 1.24 bugfixes and improvements
- * 18-FEB-15 Release 1.25 bugfixes, improvements, added Cromemco Z-1
- * 18-APR-15 Release 1.26 bugfixes and improvements
- * 18-JAN-16 Release 1.27 bugfixes and improvements
- * 05-MAY-16 Release 1.28 improved usability
- * 20-NOV-16 Release 1.29 bugfixes and improvements
- * 15-DEC-16 Release 1.30 improved memory management, machine cycle correct CPUs
- * 28-DEC-16 Release 1.31 improved memory management, reimplemented MMUs
- * 12-JAN-17 Release 1.32 improved configurations, front panel, added IMSAI VIO
- * 07-FEB-17 Release 1.33 bugfixes, improvements, better front panels
- * 16-MAR-17 Release 1.34 improvements, added ProcTec VDM-1
- * 03-AUG-17 Release 1.35 added UNIX sockets, bugfixes, improvements
- * 21-DEC-17 Release 1.36 bugfixes and improvements
  */
 
 /*
- *	This module is an ICE type user interface to debug Z80 programs
+ *	This modul is an ICE type user interface to debug Z80 programs
  *	on a host system.
  */
 
@@ -61,12 +41,10 @@
 #include <memory.h>
 #include <ctype.h>
 #include <signal.h>
-#include <sys/time.h>
 #include "sim.h"
 #include "simglb.h"
-#include "memory.h"
 
-extern void cpu_z80(void), cpu_8080(void);
+extern void cpu(void);
 extern void disass(unsigned char **, int);
 extern int exatoi(char *);
 extern int getkey(void);
@@ -96,7 +74,6 @@ static void do_unix(char *);
 static void do_help(void);
 static void cpu_err_msg(void);
 
-extern BYTE *wrk_ram;
 struct termios old_term;
 
 /*
@@ -196,21 +173,14 @@ static void do_step(void)
 
 	cpu_state = SINGLE_STEP;
 	cpu_error = NONE;
-	switch(cpu) {
-	case Z80:
-		cpu_z80();
-		break;
-	case I8080:
-		cpu_8080();
-		break;
-	}
+	cpu();
 	if (cpu_error == OPHALT)
 		handel_break();
 	cpu_err_msg();
 	print_head();
 	print_reg();
-	p = mem_base() + PC;
-	disass(&p, PC);
+	p = PC;
+	disass(&p, p - ram);
 }
 
 /*
@@ -223,22 +193,15 @@ static void do_trace(char *s)
 	while (isspace((int)*s))
 		s++;
 	if (*s == '\0')
-		count = 20;
+		count =	20;
 	else
-		count = atoi(s);
+		count =	atoi(s);
 	cpu_state = SINGLE_STEP;
 	cpu_error = NONE;
 	print_head();
 	print_reg();
 	for (i = 0; i <	count; i++) {
-		switch(cpu) {
-		case Z80:
-			cpu_z80();
-			break;
-		case I8080:
-			cpu_8080();
-			break;
-		}
+		cpu();
 		print_reg();
 		if (cpu_error) {
 			if (cpu_error == OPHALT) {
@@ -260,18 +223,11 @@ static void do_go(char *s)
 	while (isspace((int)*s))
 		s++;
 	if (isxdigit((int)*s))
-		PC = exatoi(s);
+		PC = ram + exatoi(s);
 	cont:
 	cpu_state = CONTIN_RUN;
 	cpu_error = NONE;
-	switch(cpu) {
-	case Z80:
-		cpu_z80();
-		break;
-	case I8080:
-		cpu_8080();
-		break;
-	}
+	cpu();
 	if (cpu_error == OPHALT)
 		if (handel_break())
 			if (!cpu_error)
@@ -294,7 +250,7 @@ static int handel_break(void)
 	int break_address;
 
 	for (i = 0; i <	SBSIZE;	i++)	/* search for breakpoint */
-		if (soft[i].sb_adr == PC - 1)
+		if (soft[i].sb_adr == PC - ram - 1)
 			goto was_softbreak;
 	return(0);
 	was_softbreak:
@@ -303,26 +259,19 @@ static int handel_break(void)
 	if (h_next < 0)
 		h_next = 0;
 #endif
-	break_address = PC - 1;		/* store adr of breakpoint */
-	cpu_error = NONE;		/* HALT was a breakpoint */
+	break_address =	PC - ram - 1;	/* store adr of breakpoint */
+	cpu_error = NONE;		/* HALT	was a breakpoint */
 	PC--;				/* substitute HALT opcode by */
-	*(mem_base() + PC) = soft[i].sb_oldopc;	/* original opcode */
+	*PC = soft[i].sb_oldopc;	/* original opcode */
 	cpu_state = SINGLE_STEP;	/* and execute it */
-	switch(cpu) {
-	case Z80:
-		cpu_z80();
-		break;
-	case I8080:
-		cpu_8080();
-		break;
-	}
-	*(mem_base() + soft[i].sb_adr) = 0x76; /* restore HALT opcode again */
+	cpu();
+	*(ram +	soft[i].sb_adr)	= 0x76;	/* restore HALT	opcode again */
 	soft[i].sb_passcount++;		/* increment passcounter */
 	if (soft[i].sb_passcount != soft[i].sb_pass)
-		return(1);		/* pass not reached, continue */
+		return(1);		/* pass	not reached, continue */
 	printf("Software breakpoint %d reached at %04x\n", i, break_address);
 	soft[i].sb_passcount = 0;	/* reset passcounter */
-	return(0);			/* pass reached, stop */
+	return(0);			/* pass	reached, stop */
 #else
 	return(0);
 #endif
@@ -333,27 +282,27 @@ static int handel_break(void)
  */
 static void do_dump(char *s)
 {
-	register int i, j;
+	register int i,	j;
 	BYTE c;
 
 	while (isspace((int)*s))
 		s++;
 	if (isxdigit((int)*s))
-		wrk_ram = mem_base() + exatoi(s) - exatoi(s) % 16;
+		wrk_ram	= ram +	exatoi(s) - exatoi(s) %	16;
 	printf("Adr    ");
 	for (i = 0; i <	16; i++)
-		printf("%02x ", i);
+		printf("%02x ",	i);
 	puts(" ASCII");
 	for (i = 0; i <	16; i++) {
-		printf("%04x - ", (unsigned int)(wrk_ram - mem_base()));
+		printf("%04x - ", (unsigned int)(wrk_ram - ram));
 		for (j = 0; j <	16; j++) {
-			printf("%02x ", *wrk_ram);
+			printf("%02x ",	*wrk_ram);
 			wrk_ram++;
-			if (wrk_ram > mem_base() + 65535)
-				wrk_ram = mem_base();
+			if (wrk_ram > ram + 65535)
+				wrk_ram	= ram;
 		}
 		putchar('\t');
-		for (j = -16; j < 0; j++)
+		for (j = -16; j	< 0; j++)
 			printf("%c", ((c = *(wrk_ram  + j)) >= ' ' && c <= 0x7f)
 			       ?  c : '.');
 		putchar('\n');
@@ -370,12 +319,12 @@ static void do_list(char *s)
 	while (isspace((int)*s))
 		s++;
 	if (isxdigit((int)*s))
-		wrk_ram = mem_base() + exatoi(s);
+		wrk_ram	= ram +	exatoi(s);
 	for (i = 0; i <	10; i++) {
-		printf("%04x - ", (unsigned int)(wrk_ram - mem_base()));
-		disass(&wrk_ram, wrk_ram - mem_base());
-		if (wrk_ram > mem_base() + 65535)
-			wrk_ram = mem_base();
+		printf("%04x - ", (unsigned int)(wrk_ram - ram));
+		disass(&wrk_ram, wrk_ram - ram);
+		if (wrk_ram > ram + 65535)
+			wrk_ram	= ram;
 	}
 }
 
@@ -389,22 +338,22 @@ static void do_modify(char *s)
 	while (isspace((int)*s))
 		s++;
 	if (isxdigit((int)*s))
-		wrk_ram = mem_base() + exatoi(s);
+		wrk_ram	= ram +	exatoi(s);
 	for (;;) {
-		printf("%04x = %02x : ", (unsigned int)(wrk_ram - mem_base()),
+		printf("%04x = %02x : ", (unsigned int)(wrk_ram - ram),
 		       *wrk_ram);
 		fgets(nv, sizeof(nv), stdin);
 		if (nv[0] == '\n') {
 			wrk_ram++;
-			if (wrk_ram > mem_base() + 65535)
-				wrk_ram = mem_base();
+			if (wrk_ram > ram + 65535)
+				wrk_ram	= ram;
 			continue;
 		}
 		if (!isxdigit((int)nv[0]))
 			break;
 		*wrk_ram++ = exatoi(nv);
-		if (wrk_ram > mem_base() + 65535)
-			wrk_ram = mem_base();
+		if (wrk_ram > ram + 65535)
+			wrk_ram	= ram;
 	}
 }
 
@@ -419,7 +368,7 @@ static void do_fill(char *s)
 
 	while (isspace((int)*s))
 		s++;
-	p = mem_base() + exatoi(s);
+	p = ram	+ exatoi(s);
 	while (*s != ',' && *s != '\0')
 		s++;
 	if (*s) {
@@ -438,8 +387,8 @@ static void do_fill(char *s)
 	}
 	while (i--) {
 		*p++ = val;
-		if (p >	mem_base() + 65535)
-			p = mem_base();
+		if (p >	ram + 65535)
+			p = ram;
 	}
 }
 
@@ -454,11 +403,11 @@ static void do_move(char *s)
 	
 	while (isspace((int)*s))
 		s++;
-	p1 = mem_base() + exatoi(s);
+	p1 = ram + exatoi(s);
 	while (*s != ',' && *s != '\0')
 		s++;
 	if (*s) {
-		p2 = mem_base() + exatoi(++s);
+		p2 = ram + exatoi(++s);
 	} else {
 		puts("to missing");
 		return;
@@ -466,17 +415,17 @@ static void do_move(char *s)
 	while (*s != ',' && *s != '\0')
 		s++;
 	if (*s) {
-		count = exatoi(++s);
+		count =	exatoi(++s);
 	} else {
 		puts("count missing");
 		return;
 	}
 	while (count--)	{
-		*p2++ = *p1++;
-		if (p1 > mem_base() + 65535)
-			p1 = mem_base();
-		if (p2 > mem_base() + 65535)
-			p2 = mem_base();
+		*p2++ =	*p1++;
+		if (p1 > ram + 65535)
+			p1 = ram;
+		if (p2 > ram + 65535)
+			p2 = ram;
 	}
 }
 
@@ -487,15 +436,15 @@ static void do_port(char *s)
 {
 	register BYTE port;
 	static char nv[LENCMD];
-	extern BYTE io_out(BYTE, BYTE, BYTE), io_in(BYTE, BYTE);
+	extern BYTE io_out(), io_in();
 
 	while (isspace((int)*s))
 		s++;
 	port = exatoi(s);
-	printf("%02x = %02x : ", port, io_in(port, 0));
+	printf("%02x = %02x : ", port, io_in(port));
 	fgets(nv, sizeof(nv), stdin);
 	if (isxdigit((int)*nv))
-		io_out(port, 0, (BYTE) exatoi(nv));
+		io_out(port, (BYTE) exatoi(nv));
 }
 
 /*
@@ -511,25 +460,25 @@ static void do_reg(char *s)
 		print_head();
 		print_reg();
 	} else {
-		if ((strncmp(s, "bc'", 3) == 0) && (cpu == Z80)) {
-			printf("BC' = %04x : ", B_ * 256 + C_);
+		if (strncmp(s, "bc'", 3) == 0) {
+			printf("BC' = %04x : ",	B_ * 256 + C_);
 			fgets(nv, sizeof(nv), stdin);
 			B_ = (exatoi(nv) & 0xffff) / 256;
 			C_ = (exatoi(nv) & 0xffff) % 256;
-		} else if ((strncmp(s, "de'", 3) == 0) && (cpu == Z80)) {
-			printf("DE' = %04x : ", D_ * 256 + E_);
+		} else if (strncmp(s, "de'", 3)	== 0) {
+			printf("DE' = %04x : ",	D_ * 256 + E_);
 			fgets(nv, sizeof(nv), stdin);
 			D_ = (exatoi(nv) & 0xffff) / 256;
 			E_ = (exatoi(nv) & 0xffff) % 256;
-		} else if ((strncmp(s, "hl'", 3) == 0) && (cpu == Z80)) {
-			printf("HL' = %04x : ", H_ * 256 + L_);
+		} else if (strncmp(s, "hl'", 3)	== 0) {
+			printf("HL' = %04x : ",	H_ * 256 + L_);
 			fgets(nv, sizeof(nv), stdin);
 			H_ = (exatoi(nv) & 0xffff) / 256;
 			L_ = (exatoi(nv) & 0xffff) % 256;
 		} else if (strncmp(s, "pc", 2) == 0) {
-			printf("PC = %04x : ", PC);
+			printf("PC = %04x : ", (unsigned int)(PC - ram));
 			fgets(nv, sizeof(nv), stdin);
-			PC = (exatoi(nv) & 0xffff);
+			PC = ram + (exatoi(nv) & 0xffff);
 		} else if (strncmp(s, "bc", 2) == 0) {
 			printf("BC = %04x : ", B * 256 + C);
 			fgets(nv, sizeof(nv), stdin);
@@ -545,18 +494,18 @@ static void do_reg(char *s)
 			fgets(nv, sizeof(nv), stdin);
 			H = (exatoi(nv)	& 0xffff) / 256;
 			L = (exatoi(nv)	& 0xffff) % 256;
-		} else if ((strncmp(s, "ix", 2) == 0) && (cpu == Z80)) {
+		} else if (strncmp(s, "ix", 2) == 0) {
 			printf("IX = %04x : ", IX);
 			fgets(nv, sizeof(nv), stdin);
 			IX = exatoi(nv)	& 0xffff;
-		} else if ((strncmp(s, "iy", 2) == 0) && (cpu == Z80)) {
+		} else if (strncmp(s, "iy", 2) == 0) {
 			printf("IY = %04x : ", IY);
 			fgets(nv, sizeof(nv), stdin);
 			IY = exatoi(nv)	& 0xffff;
 		} else if (strncmp(s, "sp", 2) == 0) {
-			printf("SP = %04x : ", SP);
+			printf("SP = %04x : ", (unsigned int)(STACK - ram));
 			fgets(nv, sizeof(nv), stdin);
-			SP = (exatoi(nv) & 0xffff);
+			STACK =	ram + (exatoi(nv) & 0xffff);
 		} else if (strncmp(s, "fs", 2) == 0) {
 			printf("S-FLAG = %c : ", (F & S_FLAG) ?	'1' : '0');
 			fgets(nv, sizeof(nv), stdin);
@@ -573,7 +522,7 @@ static void do_reg(char *s)
 			printf("P-FLAG = %c : ", (F & P_FLAG) ?	'1' : '0');
 			fgets(nv, sizeof(nv), stdin);
 			F = (exatoi(nv)) ? (F |	P_FLAG)	: (F & ~P_FLAG);
-		} else if ((strncmp(s, "fn", 2) == 0) && (cpu == Z80)) {
+		} else if (strncmp(s, "fn", 2) == 0) {
 			printf("N-FLAG = %c : ", (F & N_FLAG) ?	'1' : '0');
 			fgets(nv, sizeof(nv), stdin);
 			F = (exatoi(nv)) ? (F |	N_FLAG)	: (F & ~N_FLAG);
@@ -589,31 +538,31 @@ static void do_reg(char *s)
 			printf("F' = %02x : ", F_);
 			fgets(nv, sizeof(nv), stdin);
 			F_ = exatoi(nv)	& 0xff;
-		} else if ((strncmp(s, "b'", 2) == 0) && (cpu == Z80)) {
+		} else if (strncmp(s, "b'", 2) == 0) {
 			printf("B' = %02x : ", B_);
 			fgets(nv, sizeof(nv), stdin);
 			B_ = exatoi(nv)	& 0xff;
-		} else if ((strncmp(s, "c'", 2) == 0) && (cpu == Z80)) {
+		} else if (strncmp(s, "c'", 2) == 0) {
 			printf("C' = %02x : ", C_);
 			fgets(nv, sizeof(nv), stdin);
 			C_ = exatoi(nv)	& 0xff;
-		} else if ((strncmp(s, "d'", 2) == 0) && (cpu == Z80)) {
+		} else if (strncmp(s, "d'", 2) == 0) {
 			printf("D' = %02x : ", D_);
 			fgets(nv, sizeof(nv), stdin);
 			D_ = exatoi(nv)	& 0xff;
-		} else if ((strncmp(s, "e'", 2) == 0) && (cpu == Z80)) {
+		} else if (strncmp(s, "e'", 2) == 0) {
 			printf("E' = %02x : ", E_);
 			fgets(nv, sizeof(nv), stdin);
 			E_ = exatoi(nv)	& 0xff;
-		} else if ((strncmp(s, "h'", 2) == 0) && (cpu == Z80)) {
+		} else if (strncmp(s, "h'", 2) == 0) {
 			printf("H' = %02x : ", H_);
 			fgets(nv, sizeof(nv), stdin);
 			H_ = exatoi(nv)	& 0xff;
-		} else if ((strncmp(s, "l'", 2) == 0) && (cpu == Z80)) {
+		} else if (strncmp(s, "l'", 2) == 0) {
 			printf("L' = %02x : ", L_);
 			fgets(nv, sizeof(nv), stdin);
 			L_ = exatoi(nv)	& 0xff;
-		} else if ((strncmp(s, "i", 1) == 0) && (cpu == Z80)) {
+		} else if (strncmp(s, "i", 1) == 0) {
 			printf("I = %02x : ", I);
 			fgets(nv, sizeof(nv), stdin);
 			I = exatoi(nv) & 0xff;
@@ -661,13 +610,7 @@ static void do_reg(char *s)
  */
 static void print_head(void)
 {
-	if (cpu == Z80)
-
 	printf("\nPC   A  SZHPNC I  IFF BC   DE   HL   A'F' B'C' D'E' H'L' IX   IY   SP\n");
-
-	else
-
-	printf("\nPC   A  SZHPC BC   DE   HL   SP\n");
 }
 
 /*
@@ -675,26 +618,19 @@ static void print_head(void)
  */
 static void print_reg(void)
 {
-	printf("%04x %02x ", PC, A);
-	printf("%c", F & S_FLAG ? '1' :	'0');
-	printf("%c", F & Z_FLAG ? '1' :	'0');
-	printf("%c", F & H_FLAG ? '1' :	'0');
-	printf("%c", F & P_FLAG ? '1' :	'0');
-	if (cpu == Z80)
-		printf("%c", F & N_FLAG ? '1' :	'0');
-	printf("%c", F & C_FLAG ? '1' :	'0');
-	if (cpu == Z80) {
-		printf(" %02x ", I);
-		printf("%c", IFF & 1 ? '1' : '0');
-		printf("%c", IFF & 2 ? '1' : '0');
-	}
-	if (cpu == Z80) {
-		printf("  %02x%02x %02x%02x %02x%02x %02x%02x %02x%02x %02x%02x %02x%02x %04x %04x %04x\n",
-		 B, C, D, E, H, L, A_, F_, B_, C_, D_, E_, H_, L_, IX, IY, SP);
-	} else {
-		printf(" %02x%02x %02x%02x %02x%02x %04x\n",
-		 B, C, D, E, H, L, SP);
-	}
+	printf("%04x %02x ", (unsigned int)(PC - ram), A);
+	printf("%c", F & S_FLAG	? '1' :	'0');
+	printf("%c", F & Z_FLAG	? '1' :	'0');
+	printf("%c", F & H_FLAG	? '1' :	'0');
+	printf("%c", F & P_FLAG	? '1' :	'0');
+	printf("%c", F & N_FLAG	? '1' :	'0');
+	printf("%c", F & C_FLAG	? '1' :	'0');
+	printf(" %02x ", I);
+	printf("%c", IFF & 1 ? '1' : '0');
+	printf("%c", IFF & 2 ? '1' : '0');
+	printf("  %02x%02x %02x%02x %02x%02x %02x%02x %02x%02x %02x%02x %02x%02x %04x %04x %04x\n",
+		 B, C, D, E, H,	L, A_, F_, B_, C_, D_, E_, H_, L_, IX, IY,
+		 (unsigned int)(STACK - ram));
 }
 
 /*
@@ -702,8 +638,7 @@ static void print_reg(void)
  */
 static void do_break(char *s)
 {
-#ifndef SBSIZE
-	s = s;	/* to avoid compiler warning */
+#ifndef	SBSIZE
 	puts("Sorry, no breakpoints available");
 	puts("Please recompile with SBSIZE defined in sim.h");
 #else
@@ -713,7 +648,7 @@ static void do_break(char *s)
 		puts("No Addr Pass  Counter");
 		for (i = 0; i <	SBSIZE;	i++)
 			if (soft[i].sb_pass)
-				printf("%02d %04x %05d %05d\n", i,
+				printf("%02d %04x %05d %05d\n",	i,
 				       soft[i].sb_adr,soft[i].sb_pass,
 				       soft[i].sb_passcount);
 		return;
@@ -721,32 +656,32 @@ static void do_break(char *s)
 	if (isxdigit((int)*s)) {
 		i = atoi(s++);
 		if (i >= SBSIZE) {
-			printf("breakpoint %d not available\n", i);
+			printf("breakpoint %d not available\n",	i);
 			return;
 		}
 	} else {
 		i = sb_next++;
 		if (sb_next == SBSIZE)
-			sb_next = 0;
+			sb_next	= 0;
 	}
 	while (isspace((int)*s))
 		s++;
 	if (*s == 'c') {
-		*(mem_base() +	soft[i].sb_adr)	= soft[i].sb_oldopc;
+		*(ram +	soft[i].sb_adr)	= soft[i].sb_oldopc;
 		memset((char *)	&soft[i], 0, sizeof(struct softbreak));
 		return;
 	}
 	if (soft[i].sb_pass)
-		*(mem_base() + soft[i].sb_adr) = soft[i].sb_oldopc;
+		*(ram +	soft[i].sb_adr)	= soft[i].sb_oldopc;
 	soft[i].sb_adr = exatoi(s);
-	soft[i].sb_oldopc = *(mem_base() + soft[i].sb_adr);
-	*(mem_base() +	soft[i].sb_adr)	= 0x76;
+	soft[i].sb_oldopc = *(ram + soft[i].sb_adr);
+	*(ram +	soft[i].sb_adr)	= 0x76;
 	while (!iscntrl((int)*s) && !ispunct((int)*s))
 		s++;
 	if (*s != ',')
-		soft[i].sb_pass = 1;
+		soft[i].sb_pass	= 1;
 	else
-		soft[i].sb_pass = exatoi(++s);
+		soft[i].sb_pass	= exatoi(++s);
 	soft[i].sb_passcount = 0;
 #endif
 }
@@ -756,23 +691,22 @@ static void do_break(char *s)
  */
 static void do_hist(char *s)
 {
-#ifndef HISIZE
-	s = s;	/* to avoid compiler warning */
+#ifndef	HISIZE
 	puts("Sorry, no history available");
 	puts("Please recompile with HISIZE defined in sim.h");
 #else
-	int i, l, b, e, c, sa;
+	int i,	l, b, e, c, sa;
 
 	while (isspace((int)*s))
 		s++;
 	switch (*s) {
 	case 'c':
-		memset((char *)	his, 0, sizeof(struct history) * HISIZE);
+		memset((char *)	his, 0,	sizeof(struct history) * HISIZE);
 		h_next = 0;
 		h_flag = 0;
 		break;
 	default:
-		if ((h_next == 0) && (h_flag == 0)) {
+		if ((h_next == 0) && (h_flag ==	0)) {
 			puts("History memory is empty");
 			break;
 		}
@@ -794,16 +728,10 @@ static void do_hist(char *s)
 				else
 					sa = -1;
 			}
-			if (cpu == Z80) {
-				printf("%04x AF=%04x BC=%04x DE=%04x HL=%04x IX=%04x IY=%04x SP=%04x\n",
-					his[i].h_adr, his[i].h_af, his[i].h_bc,
-					his[i].h_de, his[i].h_hl, his[i].h_ix,
-					his[i].h_iy, his[i].h_sp);
-			} else {
-				printf("%04x AF=%04x BC=%04x DE=%04x HL=%04x SP=%04x\n",
-					his[i].h_adr, his[i].h_af, his[i].h_bc,
-					his[i].h_de, his[i].h_hl, his[i].h_sp);
-			}
+			printf("%04x AF=%04x BC=%04x DE=%04x HL=%04x IX=%04x IY=%04x SP=%04x\n",
+			       his[i].h_adr, his[i].h_af, his[i].h_bc,
+			       his[i].h_de, his[i].h_hl, his[i].h_ix,
+			       his[i].h_iy, his[i].h_sp);
 			l++;
 			if (l == 20) {
 				l = 0;
@@ -824,8 +752,7 @@ static void do_hist(char *s)
  */
 static void do_count(char *s)
 {
-#ifndef WANT_TIM
-	s = s;	/* to avoid compiler warning */
+#ifndef	WANT_TIM
 	puts("Sorry, no t-state count available");
 	puts("Please recompile with WANT_TIM defined in sim.h");
 #else
@@ -834,14 +761,15 @@ static void do_count(char *s)
 	if (*s == '\0')	{
 		puts("start  stop  status  T-states");
 		printf("%04x   %04x    %s   %lu\n",
-		       t_start, t_end,
+		       (unsigned int)(t_start - ram),
+		       (unsigned int)(t_end - ram),
 		       t_flag ? "on ": "off", t_states);
 	} else {
-		t_start = exatoi(s);
+		t_start	= ram +	exatoi(s);
 		while (*s != ',' && *s != '\0')
 			s++;
 		if (*s)
-			t_end = exatoi(++s);
+			t_end =	ram + exatoi(++s);
 		t_states = 0L;
 		t_flag = 0;
 	}
@@ -853,53 +781,35 @@ static void do_count(char *s)
  *	into memory locations 0000H to 0002H the following
  *	code will be stored:
  *		LOOP: JP LOOP
- *	It uses 10 T states for each execution. A 3 second
+ *	It uses 10 T states for each execution. A 3 secound
  *	timer is started and then the CPU. For every opcode
  *	fetch the R register is incremented by one and after
- *	the timer is down and stops the emulation, the clock
+ *	the timer is down and stopps the emulation, the clock
  *	speed of the CPU is calculated with:
  *		f = R /	300000
  */
 static void do_clock(void)
 {
-	BYTE save[3];
-	static struct sigaction newact;
-	static struct itimerval tim;
+	static BYTE save[3];
 
-	save[0]	= *(mem_base() + 0x0000); /* save memory locations */
-	save[1]	= *(mem_base() + 0x0001); /* 0000H - 0002H */
-	save[2]	= *(mem_base() + 0x0002);
-	*(mem_base() + 0x0000) = 0xc3;	/* store opcode JP 0000H at address */
-	*(mem_base() + 0x0001) = 0x00;	/* 0000H */
-	*(mem_base() + 0x0002) = 0x00;
-	PC = 0;				/* set PC to this code */
+	save[0]	= *(ram	+ 0x0000);	/* save memory locations */
+	save[1]	= *(ram	+ 0x0001);	/* 0000H - 0002H */
+	save[2]	= *(ram	+ 0x0002);
+	*(ram +	0x0000)	= 0xc3;		/* store opcode JP 0000H at address */
+	*(ram +	0x0001)	= 0x00;		/* 0000H */
+	*(ram +	0x0002)	= 0x00;
+	PC = ram + 0x0000;		/* set PC to this code */
 	R = 0L;				/* clear refresh register */
-	cpu_state = CONTIN_RUN;		/* initialise CPU */
+	cpu_state = CONTIN_RUN;		/* initialize CPU */
 	cpu_error = NONE;
-	newact.sa_handler = timeout;	/* set timer interrupt handler */
-	memset((void *) &newact.sa_mask, 0, sizeof(newact.sa_mask));
-	newact.sa_flags = 0;
-	sigaction(SIGALRM, &newact, NULL);
-	tim.it_value.tv_sec = 3;	/* start 3 second timer */
-	tim.it_value.tv_usec = 0;
-	tim.it_interval.tv_sec = 0;
-	tim.it_interval.tv_usec = 0;
-	setitimer(ITIMER_REAL, &tim, NULL);
-	switch(cpu) {			/* start CPU */
-	case Z80:
-		cpu_z80();
-		break;
-	case I8080:
-		cpu_8080();
-		break;
-	}
-	newact.sa_handler = SIG_DFL;	/* reset timer interrupt handler */
-	sigaction(SIGALRM, &newact, NULL);
-	*(mem_base() + 0x0000) = save[0]; /* restore memory locations */
-	*(mem_base() + 0x0001) = save[1]; /* 0000H - 0002H */
-	*(mem_base() + 0x0002) = save[2];
+	signal(SIGALRM,	timeout);	/* initialize timer interrupt handler */
+	alarm(3);			/* start 3 secound timer */
+	cpu();				/* start CPU */
+	*(ram +	0x0000)	= save[0];	/* restore memory locations */
+	*(ram +	0x0001)	= save[1];	/* 0000H - 0002H */
+	*(ram +	0x0002)	= save[2];
 	if (cpu_error == NONE)
-		printf("clock frequency = %5.2f Mhz\n", ((float) R) / 300000.0);
+		printf("clock frequency = %5.2f Mhz\n",	((float) R) / 300000.0);
 	else
 		puts("Interrupted by user");
 }
@@ -910,8 +820,6 @@ static void do_clock(void)
  */
 static void timeout(int sig)
 {
-	sig = sig;	/* to avoid compiler warning */
-
 	cpu_state = STOPPED;
 }
 
@@ -922,13 +830,13 @@ static void do_show(void)
 {
 	register int i;
 
-	printf("Release: %s\n", RELEASE);
+	printf("Release: %s\n",	RELEASE);
 #ifdef HISIZE
 	i = HISIZE;
 #else
 	i = 0;
 #endif
-	printf("No. of entries in history memory: %d\n", i);
+	printf("No. of entrys in history memory: %d\n",	i);
 #ifdef SBSIZE
 	i = SBSIZE;
 #else
@@ -936,17 +844,41 @@ static void do_show(void)
 #endif
 	printf("No. of software breakpoints: %d\n", i);
 #ifdef Z80_UNDOC
-	i = u_flag;
+	i = z_flag;
 #else
 	i = 1;
 #endif
 	printf("Undocumented op-codes %sexecuted\n", i ? "not " : "");
+#ifdef WANT_SPC
+	i = 1;
+#else
+	i = 0;
+#endif
+	printf("Stackpointer turn around %schecked\n", i ? "" :	"not ");
+#ifdef WANT_PCC
+	i = 1;
+#else
+	i = 0;
+#endif
+	printf("Programcounter turn around %schecked\n", i ? ""	: "not ");
 #ifdef WANT_TIM
 	i = 1;
 #else
 	i = 0;
 #endif
-	printf("T-State counting %spossible\n", i ? "" : "im");
+	printf("T-State counting %spossible\n",	i ? "" : "im");
+#ifdef CNTL_C
+	i = 1;
+#else
+	i = 0;
+#endif
+	printf("CPU simulation %sstopped on cntl-c\n", i ? "" :	"not ");
+#ifdef CNTL_BS
+	i = 1;
+#else
+	i = 0;
+#endif
+	printf("CPU simulation %sstopped on cntl-\\\n",	i ? "" : "not ");
 }
 
 /*
@@ -998,32 +930,28 @@ static void cpu_err_msg(void)
 	case NONE:
 		break;
 	case OPHALT:
-		printf("HALT Op-Code reached at %04x\n", PC - 1);
+		printf("HALT Op-Code reached at %04x\n",
+		       (unsigned int)(PC - ram - 1));
 		break;
-	case IOTRAPIN:
-		printf("I/O input Trap at %04x, port %02x\n", PC, io_port);
-		break;
-	case IOTRAPOUT:
-		printf("I/O output Trap at %04x, port %02x\n", PC, io_port);
-		break;
-	case IOHALT:
-		printf("\nSystem halted, bye.\n");
+	case IOTRAP:
+		printf("I/O Trap at %04x\n", (unsigned int)(PC - ram));
 		break;
 	case IOERROR:
-		printf("Fatal I/O Error at %04x\n", PC);
+		printf("Fatal I/O Error at %04x\n", (unsigned int)(PC - ram));
 		break;
 	case OPTRAP1:
-		printf("Op-code trap at %04x: %02x\n", PC - 1,
-		       *(mem_base() + PC - 1));
+		printf("Op-code trap at %04x %02x\n",
+		       (unsigned int)(PC - 1 - ram), *(PC-1));
 		break;
 	case OPTRAP2:
-		printf("Op-code trap at %04x: %02x %02x\n", PC - 2,
-		       *(mem_base() + PC - 2), *(mem_base() + PC - 1));
+		printf("Op-code trap at %04x %02x %02x\n",
+		       (unsigned int)(PC - 2 - ram),
+		       *(PC-2),	*(PC-1));
 		break;
 	case OPTRAP4:
-		printf("Op-code trap at %04x: %02x %02x %02x %02x\n",
-		       PC - 4, *(mem_base() + PC - 4), *(mem_base() + PC - 3),
-		       *(mem_base() + PC - 2), *(mem_base() + PC - 1));
+		printf("Op-code trap at %04x %02x %02x %02x %02x\n",
+		       (unsigned int)(PC - 4 - ram), *(PC-4), *(PC-3),
+		       *(PC-2), *(PC-1));
 		break;
 	case USERINT:
 		puts("User Interrupt");
