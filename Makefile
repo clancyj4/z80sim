@@ -10,6 +10,8 @@ EXE = z80sim
 
 vpath %.c gui z80
 
+$(shell mkdir -p obj)
+
 # obj/%.o: %.c $(z80_hdrs) $(gui_hdrs)
 obj/%.o: %.c
 	gcc -c -w $< `pkg-config --cflags gtk+-3.0` -Igui -Iz80 -o $@

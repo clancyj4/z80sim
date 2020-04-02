@@ -31,17 +31,17 @@ int main(int argc, char *argv[])
   gtk_widget_show(window);                
 
   Dump_Reg = 'P';
-  init_Log(Main);
+  init_Log(window);
   if (do_getfile("./test/z80main.bin"))
 //  if (do_getfile("./test/testops.bin"))
 //  if (do_getfile("./test/testio.bin"))
 //  if (do_getfile("./test/testscroll.bin"))
     return(1);
 
-  init_Flags(Main);
-  init_Registers(Main);
-  init_Memory(Main);
-  init_Code(Main);
+  init_Flags(window);
+  init_Registers(window);
+  init_Memory(window);
+  init_Code(window);
   init_IOport();
 
   Dump_From_Register(Dump_Reg);
