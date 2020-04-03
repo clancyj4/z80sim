@@ -1,7 +1,7 @@
 /*
  * Z80SIM  -  a	Z80-CPU	simulator
  *
- * Copyright (C) 1987-2008 by Udo Munk
+ * Copyright (C) 1987-2007 by Udo Munk
  *
  * This modul contains the user interface, a full qualified ICE,
  * for the Z80-CPU simulation.
@@ -23,8 +23,6 @@
  * 25-DEC-06 Release 1.12 CPU speed option
  * 19-FEB-07 Release 1.13 various improvements
  * 06-OCT-07 Release 1.14 bug fixes and improvements
- * 06-AUG-08 Release 1.15 many improvements and Windows support via Cygwin
- * 25-AUG-08 Release 1.16 console status I/O loop detection and line discipline
  */
 
 /*
@@ -43,17 +41,23 @@
 #include <signal.h>
 #include "sim.h"
 #include "simglb.h"
+#include "guiglb.h"
+
+#define BUFSIZE 256		/* buffer size for file i/o */
 
 extern void cpu(void);
 extern void disass(unsigned char **, int);
 extern int exatoi(char *);
 extern int getkey(void);
 extern void int_on(void), int_off(void);
-extern int load_file(char *);
 
-static void do_step(void);
-static void do_trace(char *);
-static void do_go(char *);
+#ifdef WANT_GUI
+void Show_All(void);
+void Add_to_Log(char *str);
+#endif
+void do_step(void);
+void do_trace(char *);
+void do_go(void);
 static int handel_break(void);
 static void do_dump(char *);
 static void do_list(char *);
@@ -64,12 +68,16 @@ static void do_port(char *);
 static void do_reg(char *);
 static void print_head(void);
 static void print_reg(void);
-static void do_break(char *);
+int do_break(char *);
 static void do_hist(char *);
 static void do_count(char *);
 static void do_clock(void);
 static void timeout(int);
 static void do_show(void);
+int do_getfile(char *);
+static int load_mos(int, char *);
+static int load_hex(char *);
+static int checksum(char *);
 static void do_unix(char *);
 static void do_help(void);
 static void cpu_err_msg(void);
@@ -88,8 +96,8 @@ void mon(void)
 	tcgetattr(0, &old_term);
 
 	if (x_flag) {
-		if (load_file(xfn) == 0)
-			do_go("");
+		if (do_getfile(xfn) == 0)
+			do_go();
 	}
 	while (eoj) {
 		next:
@@ -107,7 +115,7 @@ void mon(void)
 			do_trace(cmd + 1);
 			break;
 		case 'g':
-			do_go(cmd + 1);
+			do_go();
 			break;
 		case 'd':
 			do_dump(cmd + 1);
@@ -149,7 +157,7 @@ void mon(void)
 			do_help();
 			break;
 		case 'r':
-			load_file(cmd + 1);
+			do_getfile(cmd + 1);
 			break;
 		case '!':
 			do_unix(cmd + 1);
@@ -167,7 +175,7 @@ void mon(void)
 /*
  *	Execute a single step
  */
-static void do_step(void)
+void do_step(void)
 {
 	BYTE *p;
 
@@ -186,7 +194,7 @@ static void do_step(void)
 /*
  *	Execute several steps with trace output
  */
-static void do_trace(char *s)
+void do_trace(char *s)
 {
 	register int count, i;
 
@@ -218,12 +226,8 @@ static void do_trace(char *s)
 /*
  *	Run the CPU emulation endless
  */
-static void do_go(char *s)
+void do_go(void)
 {
-	while (isspace((int)*s))
-		s++;
-	if (isxdigit((int)*s))
-		PC = ram + exatoi(s);
 	cont:
 	cpu_state = CONTIN_RUN;
 	cpu_error = NONE;
@@ -247,7 +251,6 @@ static int handel_break(void)
 {
 #ifdef SBSIZE
 	register int i;
-	int break_address;
 
 	for (i = 0; i <	SBSIZE;	i++)	/* search for breakpoint */
 		if (soft[i].sb_adr == PC - ram - 1)
@@ -259,7 +262,6 @@ static int handel_break(void)
 	if (h_next < 0)
 		h_next = 0;
 #endif
-	break_address =	PC - ram - 1;	/* store adr of breakpoint */
 	cpu_error = NONE;		/* HALT	was a breakpoint */
 	PC--;				/* substitute HALT opcode by */
 	*PC = soft[i].sb_oldopc;	/* original opcode */
@@ -269,7 +271,8 @@ static int handel_break(void)
 	soft[i].sb_passcount++;		/* increment passcounter */
 	if (soft[i].sb_passcount != soft[i].sb_pass)
 		return(1);		/* pass	not reached, continue */
-	printf("Software breakpoint %d reached at %04x\n", i, break_address);
+	sprintf(lstr, "Software breakpoint %d reached at %04X\n", i, soft[i].sb_adr);
+	Add_to_Log(lstr);
 	soft[i].sb_passcount = 0;	/* reset passcounter */
 	return(0);			/* pass	reached, stop */
 #else
@@ -294,7 +297,7 @@ static void do_dump(char *s)
 		printf("%02x ",	i);
 	puts(" ASCII");
 	for (i = 0; i <	16; i++) {
-		printf("%04x - ", (unsigned int)(wrk_ram - ram));
+		printf("%04x - ", (WORD)(wrk_ram - ram));
 		for (j = 0; j <	16; j++) {
 			printf("%02x ",	*wrk_ram);
 			wrk_ram++;
@@ -321,7 +324,7 @@ static void do_list(char *s)
 	if (isxdigit((int)*s))
 		wrk_ram	= ram +	exatoi(s);
 	for (i = 0; i <	10; i++) {
-		printf("%04x - ", (unsigned int)(wrk_ram - ram));
+		printf("%04x - ", (WORD)(wrk_ram - ram));
 		disass(&wrk_ram, wrk_ram - ram);
 		if (wrk_ram > ram + 65535)
 			wrk_ram	= ram;
@@ -340,7 +343,7 @@ static void do_modify(char *s)
 	if (isxdigit((int)*s))
 		wrk_ram	= ram +	exatoi(s);
 	for (;;) {
-		printf("%04x = %02x : ", (unsigned int)(wrk_ram - ram),
+		printf("%04x = %02x : ", (WORD)(wrk_ram - ram),
 		       *wrk_ram);
 		fgets(nv, sizeof(nv), stdin);
 		if (nv[0] == '\n') {
@@ -476,7 +479,7 @@ static void do_reg(char *s)
 			H_ = (exatoi(nv) & 0xffff) / 256;
 			L_ = (exatoi(nv) & 0xffff) % 256;
 		} else if (strncmp(s, "pc", 2) == 0) {
-			printf("PC = %04x : ", (unsigned int)(PC - ram));
+			printf("PC = %04x : ", (WORD)(PC - ram));
 			fgets(nv, sizeof(nv), stdin);
 			PC = ram + (exatoi(nv) & 0xffff);
 		} else if (strncmp(s, "bc", 2) == 0) {
@@ -503,7 +506,7 @@ static void do_reg(char *s)
 			fgets(nv, sizeof(nv), stdin);
 			IY = exatoi(nv)	& 0xffff;
 		} else if (strncmp(s, "sp", 2) == 0) {
-			printf("SP = %04x : ", (unsigned int)(STACK - ram));
+			printf("SP = %04x : ", (WORD)(STACK - ram));
 			fgets(nv, sizeof(nv), stdin);
 			STACK =	ram + (exatoi(nv) & 0xffff);
 		} else if (strncmp(s, "fs", 2) == 0) {
@@ -610,7 +613,8 @@ static void do_reg(char *s)
  */
 static void print_head(void)
 {
-	printf("\nPC   A  SZHPNC I  IFF BC   DE   HL   A'F' B'C' D'E' H'L' IX   IY   SP\n");
+
+  Add_to_Log("\nPC   A  SZHPNC I  IFF BC   DE   HL   A'F' B'C' D'E' H'L' IX   IY   SP\n");
 }
 
 /*
@@ -618,29 +622,33 @@ static void print_head(void)
  */
 static void print_reg(void)
 {
-	printf("%04x %02x ", (unsigned int)(PC - ram), A);
-	printf("%c", F & S_FLAG	? '1' :	'0');
-	printf("%c", F & Z_FLAG	? '1' :	'0');
-	printf("%c", F & H_FLAG	? '1' :	'0');
-	printf("%c", F & P_FLAG	? '1' :	'0');
-	printf("%c", F & N_FLAG	? '1' :	'0');
-	printf("%c", F & C_FLAG	? '1' :	'0');
-	printf(" %02x ", I);
-	printf("%c", IFF & 1 ? '1' : '0');
-	printf("%c", IFF & 2 ? '1' : '0');
-	printf("  %02x%02x %02x%02x %02x%02x %02x%02x %02x%02x %02x%02x %02x%02x %04x %04x %04x\n",
+  char tstr[80];
+
+  sprintf(tstr, "%04x %02x ", (WORD)(PC - ram), A);
+  sprintf(tstr, "%c", F & S_FLAG	? '1' :	'0');
+  sprintf(tstr, "%c", F & Z_FLAG	? '1' :	'0');
+  sprintf(tstr, "%c", F & H_FLAG	? '1' :	'0');
+  sprintf(tstr, "%c", F & P_FLAG	? '1' :	'0');
+  sprintf(tstr, "%c", F & N_FLAG	? '1' :	'0');
+  sprintf(tstr, "%c", F & C_FLAG	? '1' :	'0');
+  sprintf(tstr, " %02x ", I);
+  sprintf(tstr, "%c", IFF & 1 ? '1' : '0');
+  sprintf(tstr, "%c", IFF & 2 ? '1' : '0');
+  sprintf(tstr, "  %02x%02x %02x%02x %02x%02x %02x%02x %02x%02x %02x%02x %02x%02x %04x %04x %04x\n",
 		 B, C, D, E, H,	L, A_, F_, B_, C_, D_, E_, H_, L_, IX, IY,
-		 (unsigned int)(STACK - ram));
+		 (WORD)(STACK - ram));
+  Add_to_Log(tstr);
 }
 
 /*
  *	Software breakpoints
  */
-static void do_break(char *s)
+int do_break(char *s)
 {
 #ifndef	SBSIZE
 	puts("Sorry, no breakpoints available");
 	puts("Please recompile with SBSIZE defined in sim.h");
+	return(2);
 #else
 	register int i;
 
@@ -651,13 +659,13 @@ static void do_break(char *s)
 				printf("%02d %04x %05d %05d\n",	i,
 				       soft[i].sb_adr,soft[i].sb_pass,
 				       soft[i].sb_passcount);
-		return;
+		return(0);
 	}
 	if (isxdigit((int)*s)) {
 		i = atoi(s++);
 		if (i >= SBSIZE) {
 			printf("breakpoint %d not available\n",	i);
-			return;
+			return(2);
 		}
 	} else {
 		i = sb_next++;
@@ -669,7 +677,7 @@ static void do_break(char *s)
 	if (*s == 'c') {
 		*(ram +	soft[i].sb_adr)	= soft[i].sb_oldopc;
 		memset((char *)	&soft[i], 0, sizeof(struct softbreak));
-		return;
+		return(0);
 	}
 	if (soft[i].sb_pass)
 		*(ram +	soft[i].sb_adr)	= soft[i].sb_oldopc;
@@ -683,6 +691,7 @@ static void do_break(char *s)
 	else
 		soft[i].sb_pass	= exatoi(++s);
 	soft[i].sb_passcount = 0;
+	return(0);
 #endif
 }
 
@@ -761,8 +770,8 @@ static void do_count(char *s)
 	if (*s == '\0')	{
 		puts("start  stop  status  T-states");
 		printf("%04x   %04x    %s   %lu\n",
-		       (unsigned int)(t_start - ram),
-		       (unsigned int)(t_end - ram),
+		       (WORD)(t_start - ram),
+		       (WORD)(t_end - ram),
 		       t_flag ? "on ": "off", t_states);
 	} else {
 		t_start	= ram +	exatoi(s);
@@ -843,12 +852,6 @@ static void do_show(void)
 	i = 0;
 #endif
 	printf("No. of software breakpoints: %d\n", i);
-#ifdef Z80_UNDOC
-	i = z_flag;
-#else
-	i = 1;
-#endif
-	printf("Undocumented op-codes %sexecuted\n", i ? "not " : "");
 #ifdef WANT_SPC
 	i = 1;
 #else
@@ -879,6 +882,184 @@ static void do_show(void)
 	i = 0;
 #endif
 	printf("CPU simulation %sstopped on cntl-\\\n",	i ? "" : "not ");
+}
+
+/*
+ *	Read a file into the memory of the emulated CPU.
+ *	The following file formats are supported:
+ *
+ *		binary images with Mostek header
+ *		Intel hex
+ */
+int do_getfile(char *s)
+{
+	char fn[LENCMD];
+	BYTE fileb[5];
+	register char *pfn = fn;
+	int fd;
+
+	while (isspace((int)*s))
+		s++;
+	while (*s != ',' && *s != '\n' && *s !=	'\0')
+		*pfn++ = *s++;
+	*pfn = '\0';
+	if (strlen(fn) == 0) {
+		puts("no input file given");
+		return(1);
+	}
+	if ((fd	= open(fn, O_RDONLY)) == -1) {
+		printf("can't open file %s\n", fn);
+		return(1);
+	}
+	if (*s == ',')
+		wrk_ram	= ram +	exatoi(++s);
+	else
+		wrk_ram	= NULL;
+	read(fd, (char *) fileb, 5); /*	read first 5 bytes of file */
+	if (*fileb == (BYTE) 0xff) {	/* Mostek header ? */
+		lseek(fd, 0l, 0);
+		return (load_mos(fd, fn));
+	}
+	else {
+		close(fd);
+		return (load_hex(fn));
+	}
+}
+
+/*
+ *	Loader for binary images with Mostek header.
+ *	Format of the first 3 bytes:
+ *
+ *	0xff ll	lh
+ *
+ *	ll = load address low
+ *	lh = load address high
+ */
+static int load_mos(int fd, char *fn)
+{
+	BYTE fileb[3];
+	unsigned count,	readed;
+	int rc = 0;
+
+	read(fd, (char *) fileb, 3);	/* read load address */
+	if (wrk_ram == NULL)		/* and set if not given */
+		wrk_ram	= ram +	(fileb[2] * 256	+ fileb[1]);
+	count =	ram + 65535 - wrk_ram;
+	if ((readed = read(fd, (char *)	wrk_ram, count)) == count) {
+		puts("Too much to load, stopped at 0xffff");
+		rc = 1;
+	}
+	close(fd);
+	sprintf(lstr, "Loader statistics for file %s (MOSTEK) :\nSTART : %04X\nEND   : %04X\nLOADED: %04X\n",
+		fn,
+		(WORD)(wrk_ram - ram),
+		(WORD)(wrk_ram - ram + readed - 1),
+		readed);
+	Add_to_Log(lstr);
+	PC = wrk_ram;
+	return(rc);
+}
+
+/*
+ *	Loader for Intel hex
+ */
+static int load_hex(char *fn)
+{
+	register int i;
+	FILE *fd;
+	char buf[BUFSIZE];
+	char *s;
+	int count = 0;
+	int addr = 0;
+	int saddr = 0xffff;
+	int eaddr = 0;
+	int data;
+
+	if ((fd = fopen(fn, "r")) == NULL) {
+		printf("can't open file %s\n", fn);
+		return(1);
+	}
+
+	while (fgets(&buf[0], BUFSIZE, fd) != NULL) {
+		s = &buf[0];
+		while (isspace(*s))
+			s++;
+		if (*s != ':')
+			continue;
+		if (checksum(s + 1) != 0) {
+			printf("invalid checksum in hex record: %s\n", s);
+			return(1);
+		}
+		s++;
+		count = (*s <= '9') ? (*s - '0') << 4 :
+				      (*s - 'A' + 10) << 4;
+		s++;
+		count += (*s <= '9') ? (*s - '0') :
+				       (*s - 'A' + 10);
+		s++;
+		if (count == 0)
+			break;
+		addr = (*s <= '9') ? (*s - '0') << 4 :
+				     (*s - 'A' + 10) << 4;
+		s++;
+		addr += (*s <= '9') ? (*s - '0') :
+				      (*s - 'A' + 10);
+		s++;
+		addr *= 256;
+		addr += (*s <= '9') ? (*s - '0') << 4 :
+				      (*s - 'A' + 10) << 4;
+		s++;
+		addr += (*s <= '9') ? (*s - '0') :
+				      (*s - 'A' + 10);
+		s++;
+		if (addr < saddr)
+			saddr = addr;
+		if (addr > eaddr)
+			eaddr = addr + count - 1;
+		s += 2;
+		for (i = 0; i < count; i++) {
+			data = (*s <= '9') ? (*s - '0') << 4 :
+					     (*s - 'A' + 10) << 4;
+			s++;
+			data += (*s <= '9') ? (*s - '0') :
+					      (*s - 'A' + 10);
+			s++;
+			*(ram + addr + i) = data;
+		}
+	}
+
+	fclose(fd);
+	printf("Loader statistics for file %s (INTEL):\n", fn);
+	printf("START : %04x\n", saddr);
+	printf("END   : %04x\n", eaddr);
+	printf("LOADED: %04x\n", eaddr - saddr + 1);
+	PC = ram + saddr;
+
+	return(0);
+}
+
+/*
+ *	Verify checksum of Intel hex records
+ */
+static int checksum(char *s)
+{
+	int chk = 0;
+
+	while (*s != '\n') {
+		chk += (*s <= '9') ?
+			(*s - '0') << 4 :
+			(*s - 'A' + 10) << 4;
+		s++;
+		chk += (*s <= '9') ?
+			(*s - '0') :
+			(*s - 'A' + 10);
+		s++;
+	}
+
+	if ((chk & 255) == 0)
+		return(0);
+	else
+		return(1);
 }
 
 /*
@@ -930,36 +1111,43 @@ static void cpu_err_msg(void)
 	case NONE:
 		break;
 	case OPHALT:
-		printf("HALT Op-Code reached at %04x\n",
-		       (unsigned int)(PC - ram - 1));
+		sprintf(lstr, "HALT Op-Code reached at %04X\n",
+		       (WORD)(PC - ram - 1));
+		Add_to_Log(lstr);
+		Show_All();
 		break;
 	case IOTRAP:
-		printf("I/O Trap at %04x\n", (unsigned int)(PC - ram));
+		sprintf(lstr, "I/O Trap at %04X\n", (WORD)(PC - ram));
+		Add_to_Log(lstr);
 		break;
 	case IOERROR:
-		printf("Fatal I/O Error at %04x\n", (unsigned int)(PC - ram));
+		sprintf(lstr, "Fatal I/O Error at %04X\n", (WORD)(PC - ram));
+		Add_to_Log(lstr);
 		break;
 	case OPTRAP1:
-		printf("Op-code trap at %04x %02x\n",
-		       (unsigned int)(PC - 1 - ram), *(PC-1));
+		sprintf(lstr, "Op-code trap at %04X %02X\n",
+		       (WORD)(PC - 1 - ram), *(PC-1));
+		Add_to_Log(lstr);
 		break;
 	case OPTRAP2:
-		printf("Op-code trap at %04x %02x %02x\n",
-		       (unsigned int)(PC - 2 - ram),
+		sprintf(lstr, "Op-code trap at %04X %02X %02X\n",
+		       (WORD)(PC - 2 - ram),
 		       *(PC-2),	*(PC-1));
+		Add_to_Log(lstr);
 		break;
 	case OPTRAP4:
-		printf("Op-code trap at %04x %02x %02x %02x %02x\n",
-		       (unsigned int)(PC - 4 - ram), *(PC-4), *(PC-3),
+		sprintf(lstr, "Op-code trap at %04X %02X %02X %02X %02X\n",
+		       (WORD)(PC - 4 - ram), *(PC-4), *(PC-3),
 		       *(PC-2), *(PC-1));
+		Add_to_Log(lstr);
 		break;
 	case USERINT:
-		puts("User Interrupt");
-		break;
-	case POWEROFF:
+		sprintf(lstr, "User Interrupt\n");
+		Add_to_Log(lstr);
 		break;
 	default:
-		printf("Unknown error %d\n", cpu_error);
+		sprintf(lstr, "Unknown error %d\n", cpu_error);
+		Add_to_Log(lstr);
 		break;
 	}
 }
