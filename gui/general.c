@@ -53,7 +53,7 @@ void show_about(GtkWidget *widget)
 {
   GtkWidget *about_win;
 
-  about_win = create_About_Dialog();
+//  about_win = create_About_Dialog();
   gtk_widget_show(about_win);
   gtk_dialog_run(GTK_DIALOG(about_win));
   gtk_widget_destroy(about_win);
@@ -62,7 +62,7 @@ void show_about(GtkWidget *widget)
 void Get_File(void)
 {
 
-  FCwin = create_File_Chooser();
+//  FCwin = create_File_Chooser();
   gtk_widget_show(FCwin);
   gtk_dialog_run(GTK_DIALOG(FCwin));
   
@@ -83,7 +83,7 @@ void Get_File_Open(void)
   if (fn != NULL)
   {
     sprintf(lstr, "GETFILE: %s\n", fn);
-    Add_to_Log(lstr);
+//    Add_to_Log(lstr);
     do_getfile(fn);
     Show_Code(PC, TRUE);
     Do_Code_Reload();

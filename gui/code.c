@@ -14,20 +14,6 @@
 #include "guiglb.h"
 #include "prototypes.h"
 
-#define BREAK_OP 0x76
-#define K64K (64 * 1024)
-#define BACKUP_LINES 24		/* was 12 */
-
-static GtkTextBuffer *code_textbuffer;
-static GtkTextTag *redtag, *greentag,
-		*bluetag, *boldtag;
-static gint selected_code_line;		/* persistent record of last selected line */
-static WORD Selected_Code_Addr;
-static WORD codelines[K64K];
-static GtkWidget *codetext;
-static unsigned int buff_lines_start = 0;	/* line at which the buffer starts */
-static gboolean Code_Selected;
-
 /*
  * CONCEPTS
  *
@@ -492,12 +478,12 @@ printf("Code_Break\n");
     Code_Selected = FALSE;
     Show_Code(PC, FALSE);
     sprintf(lstr, "Breakpoint %d set at 0x%04X\n", i, Selected_Code_Addr);
-    Add_to_Log(lstr);
+//    Add_to_Log(lstr);
   }
   else
   {
     sprintf(lstr, "Impossible! 0x%04X is not visible!\n", Selected_Code_Addr);
-    Add_to_Log(lstr);
+//    Add_to_Log(lstr);
   }
 }
 
@@ -529,7 +515,7 @@ void Code_UnBreak(void)
     Code_Selected = FALSE;			/* clear selection */
     sprintf(lstr, "Breakpoint %d cleared from 0x%04X\n",
 		bpc, Selected_Code_Addr);
-    Add_to_Log(lstr);
+//    Add_to_Log(lstr);
 
     Show_Code(PC, TRUE);
   }
@@ -552,10 +538,10 @@ void Code_UnBreak(void)
 
 void init_Code(GtkWidget *Main)
 {
-  GtkWidget *widget;
   PangoFontDescription *codefont;
 
-  codetext = lookup_widget(Main, "Code_Text");
+  buff_lines_start = 0;
+
   code_textbuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(codetext));
 
   codefont = pango_font_description_from_string("Monospace");
@@ -572,15 +558,13 @@ void init_Code(GtkWidget *Main)
 
 /* default the machine code button to FALSE */
 
-  widget = lookup_widget(Main, "OpcodeButton");
-  gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(widget), FALSE);
+  gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(optcodeb), FALSE);
 
 /* Set up the runslow stuff. Note that the widget holds values in mS */
 /* but the internal values are in usecs */
 
   run_slow_pref = RUN_SLOW_MSECS * 1000;
-  widget = lookup_widget(Main, "SlowRunSpin");
-  gtk_spin_button_set_value(GTK_SPIN_BUTTON(widget), RUN_SLOW_MSECS);
+  gtk_spin_button_set_value(GTK_SPIN_BUTTON(slowrunspin), RUN_SLOW_MSECS);
 
   Code_Selected = FALSE;
   build_code_cache();

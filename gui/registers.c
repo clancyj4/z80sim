@@ -14,24 +14,7 @@
 #include "guiglb.h"
 #include "prototypes.h"
 
-static GtkWidget *a_entry;
-static GtkWidget *bc_entry;
-static GtkWidget *de_entry;
-static GtkWidget *hl_entry;
-static GtkWidget *ix_entry;
-static GtkWidget *iy_entry;
-static GtkWidget *pc_entry;
-static GtkWidget *sp_entry;
-static GtkWidget *i_entry;
-static GtkWidget *r_entry;
-static GtkWidget *aa_entry;
-static GtkWidget *abc_entry;
-static GtkWidget *ade_entry;
-static GtkWidget *ahl_entry;
-static GtkWidget *mem_entry;
-
 WORD Mem_REG;
-
 
 void Dump_From_Register(char dreg)
 {
@@ -202,19 +185,19 @@ void Zero_Registers(void)
 
 void init_Registers(GtkWidget *Main)
 {
-  a_entry = lookup_widget(Main, "A_REG_Entry");
-  bc_entry = lookup_widget(Main, "BC_REG_Entry");
-  de_entry = lookup_widget(Main, "DE_REG_Entry");
-  hl_entry = lookup_widget(Main, "HL_REG_Entry");
-  ix_entry = lookup_widget(Main, "IX_REG_Entry");
-  iy_entry = lookup_widget(Main, "IY_REG_Entry");
-  pc_entry = lookup_widget(Main, "PC_REG_Entry");
-  sp_entry = lookup_widget(Main, "SP_REG_Entry");
-  i_entry = lookup_widget(Main, "I_REG_Entry");
-  r_entry = lookup_widget(Main, "R_REG_Entry");
-  aa_entry = lookup_widget(Main, "AA_REG_Entry");
-  abc_entry = lookup_widget(Main, "ABC_REG_Entry");
-  ade_entry = lookup_widget(Main, "ADE_REG_Entry");
-  ahl_entry = lookup_widget(Main, "AHL_REG_Entry");
-  mem_entry = lookup_widget(Main, "Mem_REG_Entry");
+//  a_entry = lookup_widget(Main, "A_REG_Entry");
+//  bc_entry = lookup_widget(Main, "BC_REG_Entry");
+//  de_entry = lookup_widget(Main, "DE_REG_Entry");
+//  hl_entry = lookup_widget(Main, "HL_REG_Entry");
+//  ix_entry = lookup_widget(Main, "IX_REG_Entry");
+//  iy_entry = lookup_widget(Main, "IY_REG_Entry");
+//  pc_entry = lookup_widget(Main, "PC_REG_Entry");
+//  sp_entry = lookup_widget(Main, "SP_REG_Entry");
+//  i_entry = lookup_widget(Main, "I_REG_Entry");
+//  r_entry = lookup_widget(Main, "R_REG_Entry");
+//  aa_entry = lookup_widget(Main, "AA_REG_Entry");
+//  abc_entry = lookup_widget(Main, "ABC_REG_Entry");
+//  ade_entry = lookup_widget(Main, "ADE_REG_Entry");
+//  ahl_entry = lookup_widget(Main, "AHL_REG_Entry");
+//  mem_entry = lookup_widget(Main, "Mem_REG_Entry");
 }

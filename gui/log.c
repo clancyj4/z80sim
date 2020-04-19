@@ -11,10 +11,7 @@
 
 #include "sim.h"
 #include "simglb.h"
-
-static GtkTextBuffer *log_textbuffer;
-static GtkWidget *logtext;
-static GtkWidget *Log;
+#include "guiglb.h"
 
 /*
  * Add a string to the end of the log window then scroll to the bottom
@@ -37,7 +34,6 @@ void Add_to_Log(char *str)
 			mark, 0.0, FALSE, 0.0, 0.0); 
 }
 
-
 void show_log(gboolean onoff)
 {
   if (onoff)
@@ -46,13 +42,12 @@ void show_log(gboolean onoff)
     gtk_widget_hide(Log);
 }
 
-
 void init_Log(GtkWidget *Main)
 {
   PangoFontDescription *codefont;
 
-  Log = create_Log();
-  logtext = lookup_widget(Log, "Log_Text");
+//  Log = create_Log();
+//  logtext = lookup_widget(Log, "Log_Text");
   log_textbuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(logtext));
 
   codefont = pango_font_description_from_string("Monospace");

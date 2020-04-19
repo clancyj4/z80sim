@@ -272,7 +272,7 @@ static int handel_break(void)
 	if (soft[i].sb_passcount != soft[i].sb_pass)
 		return(1);		/* pass	not reached, continue */
 	sprintf(lstr, "Software breakpoint %d reached at %04X\n", i, soft[i].sb_adr);
-	Add_to_Log(lstr);
+//	Add_to_Log(lstr);
 	soft[i].sb_passcount = 0;	/* reset passcounter */
 	return(0);			/* pass	reached, stop */
 #else
@@ -614,7 +614,7 @@ static void do_reg(char *s)
 static void print_head(void)
 {
 
-  Add_to_Log("\nPC   A  SZHPNC I  IFF BC   DE   HL   A'F' B'C' D'E' H'L' IX   IY   SP\n");
+//  Add_to_Log("\nPC   A  SZHPNC I  IFF BC   DE   HL   A'F' B'C' D'E' H'L' IX   IY   SP\n");
 }
 
 /*
@@ -637,7 +637,7 @@ static void print_reg(void)
   sprintf(tstr, "  %02x%02x %02x%02x %02x%02x %02x%02x %02x%02x %02x%02x %02x%02x %04x %04x %04x\n",
 		 B, C, D, E, H,	L, A_, F_, B_, C_, D_, E_, H_, L_, IX, IY,
 		 (WORD)(STACK - ram));
-  Add_to_Log(tstr);
+//  Add_to_Log(tstr);
 }
 
 /*
@@ -955,7 +955,7 @@ static int load_mos(int fd, char *fn)
 		(WORD)(wrk_ram - ram),
 		(WORD)(wrk_ram - ram + readed - 1),
 		readed);
-	Add_to_Log(lstr);
+//	Add_to_Log(lstr);
 	PC = wrk_ram;
 	return(rc);
 }
@@ -1113,41 +1113,41 @@ static void cpu_err_msg(void)
 	case OPHALT:
 		sprintf(lstr, "HALT Op-Code reached at %04X\n",
 		       (WORD)(PC - ram - 1));
-		Add_to_Log(lstr);
+//		Add_to_Log(lstr);
 		Show_All();
 		break;
 	case IOTRAP:
 		sprintf(lstr, "I/O Trap at %04X\n", (WORD)(PC - ram));
-		Add_to_Log(lstr);
+//		Add_to_Log(lstr);
 		break;
 	case IOERROR:
 		sprintf(lstr, "Fatal I/O Error at %04X\n", (WORD)(PC - ram));
-		Add_to_Log(lstr);
+//		Add_to_Log(lstr);
 		break;
 	case OPTRAP1:
 		sprintf(lstr, "Op-code trap at %04X %02X\n",
 		       (WORD)(PC - 1 - ram), *(PC-1));
-		Add_to_Log(lstr);
+//		Add_to_Log(lstr);
 		break;
 	case OPTRAP2:
 		sprintf(lstr, "Op-code trap at %04X %02X %02X\n",
 		       (WORD)(PC - 2 - ram),
 		       *(PC-2),	*(PC-1));
-		Add_to_Log(lstr);
+//		Add_to_Log(lstr);
 		break;
 	case OPTRAP4:
 		sprintf(lstr, "Op-code trap at %04X %02X %02X %02X %02X\n",
 		       (WORD)(PC - 4 - ram), *(PC-4), *(PC-3),
 		       *(PC-2), *(PC-1));
-		Add_to_Log(lstr);
+//		Add_to_Log(lstr);
 		break;
 	case USERINT:
 		sprintf(lstr, "User Interrupt\n");
-		Add_to_Log(lstr);
+//		Add_to_Log(lstr);
 		break;
 	default:
 		sprintf(lstr, "Unknown error %d\n", cpu_error);
-		Add_to_Log(lstr);
+//		Add_to_Log(lstr);
 		break;
 	}
 }

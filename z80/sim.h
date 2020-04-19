@@ -26,6 +26,10 @@
  * 25-AUG-08 Release 1.16 console status I/O loop detection and line discipline
  */
 
+#ifndef SIM_H
+
+#define SIM_H
+
 #include <stdint.h>
 
 /*
@@ -127,3 +131,5 @@ struct softbreak {			/* structure of a breakpoint */
 	int	sb_pass;		/* no. of pass to break */
 };
 #endif
+#endif
+

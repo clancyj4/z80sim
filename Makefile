@@ -14,12 +14,12 @@ $(shell mkdir -p obj)
 
 # obj/%.o: %.c $(z80_hdrs) $(gui_hdrs)
 obj/%.o: %.c
-	gcc -c -w $< `pkg-config --cflags gtk+-3.0` -Igui -Iz80 -o $@
+	gcc -g -c -w $< `pkg-config --cflags gtk+-3.0` -Igui -Iz80 -o $@
 
 all: $(EXE)
 
-$(EXE): $(z80_objs) $(gui_objs)
-	gcc -o $@ main.c -Wall -Iz80 -Igui `pkg-config --cflags --libs gtk+-3.0` -export-dynamic $^ `pkg-config --cflags --libs gtk+-3.0`
+$(EXE): $(z80_objs) $(gui_objs) main.c
+	gcc -g -o $@ -Wall -Iz80 -Igui `pkg-config --cflags --libs gtk+-3.0` -export-dynamic $^ `pkg-config --cflags --libs gtk+-3.0`
 
 clean:
 	rm -f $(EXE) *.o obj/*.o

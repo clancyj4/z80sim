@@ -13,13 +13,6 @@
 #include "simglb.h"
 #include "guiglb.h"
 
-static GtkTextBuffer *ioport_textbuffer;
-static GtkWidget *ioport_win;
-static GtkWidget *ioporttext;
-static GtkWidget *in_port_prompt;
-static GtkWidget *in_port_data;
-
-
 /* Create an IO Port struct for a given port */
 /* In other words allocate memory for it and assign the IOPort[] */
 /* pointer.  Note that these memory allocations are never released. */
@@ -43,8 +36,7 @@ void Create_IOPort_Struct(int port)
   IOPort[port] = malloc(sizeof(IOPortStruct));
   if (IOPort[port] == NULL)
   {
-    fprintf(stderr, "Memory allocation for IOPort[%d] failed.",
-		port);
+    fprintf(stderr, "Memory allocation for IOPort[%d] failed.", port);
     exit(99);						/* Time to BAIL OUT */
   }
 
@@ -169,13 +161,13 @@ void init_IOport(void)
 
   PangoFontDescription *iofont;
 
-  ioport_win = create_IOWIN();
+//  ioport_win = create_IOWIN();
 
-  ioporttext = lookup_widget(ioport_win, "IOPortText");
+//  ioporttext = lookup_widget(ioport_win, "IOPortText");
   ioport_textbuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ioporttext));
 
-  in_port_prompt = lookup_widget(ioport_win, "In_Port_Prompt");
-  in_port_data = lookup_widget(ioport_win, "In_Port_Data");
+//  in_port_prompt = lookup_widget(ioport_win, "In_Port_Prompt");
+//  in_port_data = lookup_widget(ioport_win, "In_Port_Data");
 
   iofont = pango_font_description_from_string("Monospace");
   gtk_widget_modify_font(ioporttext, iofont);

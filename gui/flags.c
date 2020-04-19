@@ -9,20 +9,7 @@
 
 #include "sim.h"
 #include "simglb.h"
-
-#define NFLAGS	8
-
-char FlagEnt[NFLAGS][8] =
-{
-  "entry_S",
-  "entry_Z",
-  "entry_Y",
-  "entry_H",
-  "entry_X",
-  "entry_P",
-  "entry_N",
-  "entry_C"
-};
+#include "guiglb.h"
 
 GtkWidget *flentry[NFLAGS];
 
@@ -61,8 +48,5 @@ void init_Flags(GtkWidget *Main)
   int i;
 
   for (i = 0; i < NFLAGS; i++)
-  {
-    flentry[i] = lookup_widget(Main, FlagEnt[i]);
     gtk_label_set_text(GTK_LABEL(flentry[i]), "0");
-  }
 }

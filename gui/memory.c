@@ -9,9 +9,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "sim.h"
-#include "simglb.h"
 #include "guiglb.h"
+#include "simglb.h"
 #include "prototypes.h"
 
 #define MEM_INITIAL_STRING "1234: 01 02 03 04 05 06 07 08 ABCDEFGH"
@@ -19,17 +18,6 @@
 #define MEM_NUMBYTES 8
 #define DUMP_ROW_MASK (0xffff ^ (MEM_NUMBYTES - 1))
 #define DUMP_ADDR_MASK 0xff80
-
-static GtkTextBuffer *mem_textbuffer;
-static GtkTextTag *redtag, *greentag;
-static gboolean Memory_Selected;
-static int mem_sel_row, mem_sel_col;
-static int mem_buff_row_start;
-static BYTE Selected_Memory_Content;
-static WORD Selected_Memory_Addr;
-static GtkWidget *Mem_Addr_Entry;
-static GtkWidget *Mem_Content_Entry;
-static GtkWidget *memtext;
 
 extern WORD Mem_REG;
 
@@ -354,7 +342,7 @@ void init_Memory(GtkWidget *Main)
 {
   PangoFontDescription *codefont;
 
-  memtext = lookup_widget(Main, "Mem_text");
+//  memtext = lookup_widget(Main, "Mem_text");
 
   mem_textbuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(memtext));
 
@@ -368,8 +356,8 @@ void init_Memory(GtkWidget *Main)
 
   Memory_Selected = FALSE;
 
-  Mem_Addr_Entry = lookup_widget(Main, "Mem_Addr_Entry");
-  Mem_Content_Entry = lookup_widget(Main, "Mem_Content_Entry");
+//  Mem_Addr_Entry = lookup_widget(Main, "Mem_Addr_Entry");
+//  Mem_Content_Entry = lookup_widget(Main, "Mem_Content_Entry");
 
   mem_buff_row_start = 0;			/* new start row */
 //  g_signal_connect(mem_textbuffer, "mark_set", Mem_clicked, NULL);
