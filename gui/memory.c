@@ -19,6 +19,8 @@
 #define DUMP_ROW_MASK (0xffff ^ (MEM_NUMBYTES - 1))
 #define DUMP_ADDR_MASK 0xff80
 
+static GtkTextTag *redtag, *greentag;
+
 extern WORD Mem_REG;
 
 void dump_memory_vars(void)

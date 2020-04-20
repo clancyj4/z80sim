@@ -59,7 +59,6 @@ BYTE Selected_Memory_Content;
 WORD Selected_Memory_Addr;
 
 GtkTextBuffer *code_textbuffer;
-GtkTextTag *redtag, *greentag, *bluetag, *boldtag;
 gint selected_code_line;      	         /* persistent record of last selected line */
 WORD Selected_Code_Addr;
 WORD codelines[K64K];

@@ -94,7 +94,6 @@ extern GtkWidget *   in_port_data;
 #define BACKUP_LINES 24         /* was 12 */
 
 extern GtkTextBuffer *code_textbuffer;
-extern GtkTextTag *redtag, *greentag, *bluetag, *boldtag;
 extern gint selected_code_line;         /* persistent record of last selected line */
 extern WORD Selected_Code_Addr;
 extern WORD codelines[K64K];

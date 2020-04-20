@@ -14,6 +14,8 @@
 #include "guiglb.h"
 #include "prototypes.h"
 
+static GtkTextTag *redtag, *greentag, *bluetag, *boldtag;
+
 /*
  * CONCEPTS
  *
@@ -205,8 +207,7 @@ void Code_Clicked(void)
   gint newline;
   GtkTextIter aniter;
 
-  gtk_text_buffer_get_iter_at_mark(code_textbuffer,
-     &aniter, gtk_text_buffer_get_insert(code_textbuffer));
+  gtk_text_buffer_get_iter_at_mark(code_textbuffer, &aniter, gtk_text_buffer_get_insert(code_textbuffer));
 
   newline = gtk_text_iter_get_line(&aniter);
 
@@ -215,7 +216,7 @@ void Code_Clicked(void)
     selected_code_line = newline + buff_lines_start;
     Selected_Code_Addr = line2addr(selected_code_line);
     Code_Selected = TRUE;
-//printf("(clicked) Processed click: newline=%d selected_code_line=%d Code_Selected=%d\n", newline, selected_code_line, Code_Selected);
+printf("(clicked) Processed click: newline=%d selected_code_line=%d Code_Selected=%d\n", newline, selected_code_line, Code_Selected);
 
     darken_code(-1, redtag);			/* remove all old tag */
 // printf("p3: dch\n");
@@ -366,8 +367,8 @@ printf("P1: disas_addr_line=%d force=%d buff_lines_start=%ld buff_lines_end=%ld\
 
 /* DEBUG: show buffered line number and code line number */
 
-sprintf(tstr, "%02d %03d  ", line, disas_addr_line + line);
-strcat(whole_buffer, tstr);
+//sprintf(tstr, "%02d %03d  ", line, disas_addr_line + line);
+//strcat(whole_buffer, tstr);
 
       if (show_opcodes)				/* machine code display? */
       {
