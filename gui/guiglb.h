@@ -80,7 +80,6 @@ extern GtkWidget *   Mem_Addr_Entry;
 extern GtkWidget *   Mem_Content_Entry;
 
 extern GtkTextBuffer *mem_textbuffer;
-extern GtkTextTag *redtag, *greentag;
 extern gboolean Memory_Selected;
 extern int mem_sel_row, mem_sel_col;
 extern int mem_buff_row_start;
@@ -99,7 +98,7 @@ extern GtkTextTag *redtag, *greentag, *bluetag, *boldtag;
 extern gint selected_code_line;         /* persistent record of last selected line */
 extern WORD Selected_Code_Addr;
 extern WORD codelines[K64K];
-extern unsigned int buff_lines_start;       /* line at which the buffer starts */
+extern int buff_lines_start;       /* line at which the buffer starts */
 extern gboolean Code_Selected;
 
 extern GtkTextBuffer *ioport_textbuffer;

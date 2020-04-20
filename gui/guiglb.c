@@ -52,7 +52,6 @@ GtkWidget *   in_port_prompt;
 GtkWidget *   in_port_data;
 
 GtkTextBuffer *mem_textbuffer;
-GtkTextTag *redtag, *greentag;
 gboolean Memory_Selected;
 int mem_sel_row, mem_sel_col;
 int mem_buff_row_start;
@@ -64,7 +63,7 @@ GtkTextTag *redtag, *greentag, *bluetag, *boldtag;
 gint selected_code_line;      	         /* persistent record of last selected line */
 WORD Selected_Code_Addr;
 WORD codelines[K64K];
-unsigned int buff_lines_start;           /* line at which the buffer starts */
+int buff_lines_start;           /* line at which the buffer starts */
 gboolean Code_Selected;
 
 struct IOPortStruct *IOPort[NUMIOPORTS];

@@ -161,16 +161,16 @@ int highlight_memory(WORD begin, GtkTextTag *hightag)
   GtkTextIter start, end;
   int row;
   WORD addr;
+gchar *teststr;
 
   addr = begin & DUMP_ROW_MASK;
   row = mem_addr_to_row(addr);
   if (row == -1)
     return row;
 
-/* DEBUG
+/* DEBUG */
   printf("highlight_memory: begin=%04X, addr=%04X, row=%d\n",
 	begin, addr, row);
-*/
 
   /* Highlight the hex code */
 
@@ -178,6 +178,8 @@ int highlight_memory(WORD begin, GtkTextTag *hightag)
   gtk_text_iter_forward_chars(&start, 6 + ((begin - addr) * 3));
   end = start;
   gtk_text_iter_forward_chars(&end, 2);
+teststr=gtk_text_iter_get_text(&start, &end);
+
   gtk_text_buffer_apply_tag(mem_textbuffer, hightag, &start, &end);
 
   /* Highlight the character */
@@ -186,6 +188,7 @@ int highlight_memory(WORD begin, GtkTextTag *hightag)
   gtk_text_iter_forward_chars(&start, 6 + (MEM_NUMBYTES * 3) + (begin - addr));
   end = start;
   gtk_text_iter_forward_chars(&end, 1);
+teststr=gtk_text_iter_get_text(&start, &end);
   gtk_text_buffer_apply_tag(mem_textbuffer, hightag, &start, &end);
 
   return(row);
