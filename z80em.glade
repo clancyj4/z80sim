@@ -19,10 +19,34 @@
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
             <child>
-              <placeholder/>
+              <object class="GtkButton">
+                <property name="label">gtk-cancel</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+                <signal name="clicked" handler="on_File_Cancel_Button_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkButton">
+                <property name="label">gtk-open</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+                <signal name="clicked" handler="on_File_Open_Button_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
             </child>
           </object>
           <packing>
@@ -185,6 +209,7 @@
   <object class="GtkWindow" id="IOWIN">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Z80 I/O Port</property>
+    <signal name="destroy" handler="on_IOWIN_destroy" swapped="no"/>
     <child>
       <placeholder/>
     </child>
@@ -218,6 +243,7 @@
                 <property name="receives_default">False</property>
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
+                <signal name="toggled" handler="on_IOASCII_toggled" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -233,6 +259,7 @@
                 <property name="receives_default">False</property>
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
+                <signal name="toggled" handler="on_IOHex_toggled" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -318,6 +345,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <signal name="clicked" handler="on_In_Port_Submit_clicked" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -378,6 +406,8 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Z80 Emulator</property>
+    <signal name="button-release-event" handler="on_Code_Text_button_release_event" swapped="no"/>
+    <signal name="delete-event" handler="gtk_main_quit" swapped="no"/>
     <child>
       <placeholder/>
     </child>
@@ -416,6 +446,7 @@
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="Get_File" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -449,6 +480,7 @@
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="gtk_main_quit" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -676,6 +708,7 @@
                                 <property name="receives_default">False</property>
                                 <property name="xalign">0.44999998807907104</property>
                                 <property name="draw_indicator">True</property>
+                                <signal name="toggled" handler="on_BC_Button_toggled" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
@@ -692,6 +725,7 @@
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">BC_Button</property>
+                                <signal name="toggled" handler="on_DE_Button_toggled" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
@@ -708,6 +742,7 @@
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">BC_Button</property>
+                                <signal name="toggled" handler="on_HL_Button_toggled" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
@@ -724,6 +759,7 @@
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">BC_Button</property>
+                                <signal name="toggled" handler="on_IX_Button_toggled" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
@@ -740,6 +776,7 @@
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">BC_Button</property>
+                                <signal name="toggled" handler="on_IY_Button_toggled" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
@@ -756,6 +793,7 @@
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">BC_Button</property>
+                                <signal name="toggled" handler="on_PC_Button_toggled" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
@@ -773,6 +811,7 @@
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">BC_Button</property>
+                                <signal name="toggled" handler="on_SP_Button_toggled" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="left_attach">0</property>
@@ -860,6 +899,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <signal name="clicked" handler="on_Break_Button_clicked" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="left_attach">4</property>
@@ -1014,6 +1054,7 @@
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">BC_Button</property>
+                                <signal name="toggled" handler="on_Mem_Button_toggled" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="left_attach">2</property>
@@ -1079,6 +1120,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="yalign">0.4699999988079071</property>
+                                <signal name="clicked" handler="on_Reset_Button_clicked" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="left_attach">4</property>
@@ -1091,6 +1133,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <signal name="clicked" handler="on_Zero_Button_clicked" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="left_attach">4</property>
@@ -1103,6 +1146,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <signal name="clicked" handler="on_Clear_Break_Button_clicked" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="left_attach">4</property>
@@ -1115,6 +1159,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <signal name="clicked" handler="on_Synch_Memory_Button_clicked" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="left_attach">4</property>
@@ -1127,6 +1172,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <signal name="clicked" handler="on_PC_Set_Button_clicked" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="left_attach">4</property>
@@ -1141,6 +1187,7 @@
                                 <property name="receives_default">False</property>
                                 <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
+                                <signal name="toggled" handler="on_SlowRunButton_toggled" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="left_attach">4</property>
@@ -1153,6 +1200,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="climb_rate">10</property>
                                 <property name="numeric">True</property>
+                                <signal name="value-changed" handler="on_PortSpin_value_changed" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="left_attach">4</property>
@@ -1224,6 +1272,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <signal name="clicked" handler="on_Update_REG_button_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1241,6 +1290,7 @@
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="tooltip_text" translatable="yes">Scroll the code window to where the PC is pointing.</property>
+                        <signal name="clicked" handler="on_Code_scroll_to_PC_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1278,6 +1328,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <signal name="clicked" handler="on_buttonZ_clicked" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="left_attach">1</property>
@@ -1290,6 +1341,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <signal name="clicked" handler="on_buttonY_clicked" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="left_attach">2</property>
@@ -1302,6 +1354,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <signal name="clicked" handler="on_buttonH_clicked" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="left_attach">3</property>
@@ -1314,6 +1367,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <signal name="clicked" handler="on_buttonX_clicked" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="left_attach">4</property>
@@ -1326,6 +1380,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <signal name="clicked" handler="on_buttonP_clicked" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="left_attach">5</property>
@@ -1338,6 +1393,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <signal name="clicked" handler="on_buttonN_clicked" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="left_attach">6</property>
@@ -1350,34 +1406,11 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <signal name="clicked" handler="on_buttonC_clicked" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="left_attach">7</property>
                                 <property name="top_attach">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="buttonS">
-                                <property name="label" translatable="yes">S</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                              </object>
-                              <packing>
-                                <property name="left_attach">0</property>
-                                <property name="top_attach">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkLabel" id="entry_S">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">1</property>
-                                <property name="width_chars">1</property>
-                              </object>
-                              <packing>
-                                <property name="left_attach">0</property>
-                                <property name="top_attach">1</property>
                               </packing>
                             </child>
                             <child>
@@ -1464,6 +1497,30 @@
                                 <property name="top_attach">1</property>
                               </packing>
                             </child>
+                            <child>
+                              <object class="GtkButton" id="buttonS">
+                                <property name="label" translatable="yes">S</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <signal name="clicked" handler="on_buttonS_clicked" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="entry_S">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">1</property>
+                              </object>
+                              <packing>
+                                <property name="left_attach">0</property>
+                                <property name="top_attach">1</property>
+                              </packing>
+                            </child>
                           </object>
                         </child>
                       </object>
@@ -1513,6 +1570,7 @@
                                 <property name="buffer">textbuffer2</property>
                                 <property name="overwrite">True</property>
                                 <property name="accepts_tab">False</property>
+                                <signal name="button-release-event" handler="on_Mem_text_button_release_event" swapped="no"/>
                               </object>
                             </child>
                           </object>
@@ -1545,6 +1603,7 @@
                         <property name="can_focus">True</property>
                         <property name="focus_on_click">False</property>
                         <property name="receives_default">True</property>
+                        <signal name="clicked" handler="on_Mem_Step_Back_clicked" swapped="no"/>
                         <child>
                           <object class="GtkImage" id="image1">
                             <property name="visible">True</property>
@@ -1565,6 +1624,7 @@
                         <property name="can_focus">True</property>
                         <property name="focus_on_click">False</property>
                         <property name="receives_default">True</property>
+                        <signal name="clicked" handler="on_Mem_Step_Fwd_clicked" swapped="no"/>
                         <child>
                           <object class="GtkImage" id="image2">
                             <property name="visible">True</property>
@@ -1585,6 +1645,7 @@
                         <property name="can_focus">True</property>
                         <property name="focus_on_click">False</property>
                         <property name="receives_default">True</property>
+                        <signal name="clicked" handler="on_Mem_Step_Row_Back_clicked" swapped="no"/>
                         <child>
                           <object class="GtkImage" id="image3">
                             <property name="visible">True</property>
@@ -1605,6 +1666,7 @@
                         <property name="can_focus">True</property>
                         <property name="focus_on_click">False</property>
                         <property name="receives_default">True</property>
+                        <signal name="clicked" handler="on_Mem_Row_Fwd_clicked" swapped="no"/>
                         <child>
                           <object class="GtkImage" id="image4">
                             <property name="visible">True</property>
@@ -1625,6 +1687,7 @@
                         <property name="can_focus">True</property>
                         <property name="focus_on_click">False</property>
                         <property name="receives_default">True</property>
+                        <signal name="clicked" handler="on_Mem_Page_Back_clicked" swapped="no"/>
                         <child>
                           <object class="GtkImage" id="image5">
                             <property name="visible">True</property>
@@ -1645,6 +1708,7 @@
                         <property name="can_focus">True</property>
                         <property name="focus_on_click">False</property>
                         <property name="receives_default">True</property>
+                        <signal name="clicked" handler="on_Mem_Page_Fwd_clicked" swapped="no"/>
                         <child>
                           <object class="GtkImage" id="image6">
                             <property name="visible">True</property>
@@ -1729,11 +1793,13 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="Mem_Update_Button">
-                        <property name="label" translatable="yes">Update</property>
+                        <property name="label">gtk-refresh</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="relief">half</property>
+                        <property name="use_stock">True</property>
+                        <signal name="clicked" handler="on_Mem_Update_Button_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1776,10 +1842,12 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="tooltip_text" translatable="yes">Adds a breakpoint to the selected code line.</property>
+                            <property name="border_width">1</property>
                             <property name="cursor_visible">False</property>
                             <property name="buffer">textbuffer1</property>
                             <property name="overwrite">True</property>
                             <property name="accepts_tab">False</property>
+                            <signal name="button-release-event" handler="on_Code_Text_button_release_event" swapped="no"/>
                           </object>
                         </child>
                       </object>
@@ -1815,6 +1883,7 @@
   <object class="GtkWindow" id="Log">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Z80 Emulator Log</property>
+    <signal name="delete-event" handler="on_Log_delete_event" swapped="no"/>
     <child>
       <placeholder/>
     </child>
