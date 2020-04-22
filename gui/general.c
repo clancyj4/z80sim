@@ -83,7 +83,7 @@ void Get_File_Open(void)
   if (fn != NULL)
   {
     sprintf(lstr, "GETFILE: %s\n", fn);
-//    Add_to_Log(lstr);
+    Add_to_Log(lstr);
     do_getfile(fn);
     Show_Code(PC, TRUE);
     Do_Code_Reload();

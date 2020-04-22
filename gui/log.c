@@ -13,6 +13,8 @@
 #include "simglb.h"
 #include "guiglb.h"
 
+static GtkTextBuffer *log_textbuffer;
+
 /*
  * Add a string to the end of the log window then scroll to the bottom
  * of the buffer. We use a mark as the scroll point to avoid any nastiness

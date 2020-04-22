@@ -93,7 +93,7 @@
               <object class="GtkEntry">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="width_chars">4</property>
+                <property name="width_chars">6</property>
                 <property name="text" translatable="yes">0000</property>
               </object>
               <packing>
@@ -120,7 +120,7 @@
               <object class="GtkEntry">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="width_chars">4</property>
+                <property name="width_chars">6</property>
                 <property name="text" translatable="yes">0000</property>
               </object>
               <packing>
@@ -147,7 +147,7 @@
               <object class="GtkEntry">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="width_chars">2</property>
+                <property name="width_chars">4</property>
                 <property name="text" translatable="yes">00</property>
               </object>
               <packing>
@@ -543,6 +543,20 @@
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">_View</property>
                 <property name="use_underline">True</property>
+                <child type="submenu">
+                  <object class="GtkMenu" id="menu4">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkCheckMenuItem" id="imagemenuitem20">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label">Log</property>
+                        <signal name="toggled" handler="on_log1_activate" swapped="no"/>
+                      </object>
+                    </child>
+                  </object>
+                </child>
               </object>
             </child>
             <child>
@@ -706,7 +720,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="xalign">0.44999998807907104</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_BC_Button_toggled" swapped="no"/>
                               </object>
@@ -721,7 +734,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="xalign">0</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">BC_Button</property>
@@ -738,7 +750,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="xalign">0</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">BC_Button</property>
@@ -755,7 +766,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="xalign">0</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">BC_Button</property>
@@ -772,7 +782,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="xalign">0</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">BC_Button</property>
@@ -789,7 +798,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="xalign">0</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">BC_Button</property>
@@ -806,8 +814,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="xalign">0</property>
-                                <property name="yalign">0.56000000238418579</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">BC_Button</property>
@@ -1049,8 +1055,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="xalign">0</property>
-                                <property name="yalign">0.54000002145767212</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">BC_Button</property>
@@ -1119,7 +1123,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
-                                <property name="yalign">0.4699999988079071</property>
                                 <signal name="clicked" handler="on_Reset_Button_clicked" swapped="no"/>
                               </object>
                               <packing>
@@ -1185,7 +1188,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_SlowRunButton_toggled" swapped="no"/>
                               </object>
@@ -1645,7 +1647,7 @@
                         <property name="can_focus">True</property>
                         <property name="focus_on_click">False</property>
                         <property name="receives_default">True</property>
-                        <signal name="clicked" handler="on_Mem_Step_Row_Back_clicked" swapped="no"/>
+                        <signal name="clicked" handler="on_Mem_Row_Back_clicked" swapped="no"/>
                         <child>
                           <object class="GtkImage" id="image3">
                             <property name="visible">True</property>
@@ -1892,6 +1894,10 @@
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="shadow_type">in</property>
+        <property name="min_content_width">800</property>
+        <property name="min_content_height">400</property>
+        <property name="propagate_natural_width">True</property>
+        <property name="propagate_natural_height">True</property>
         <child>
           <object class="GtkTextView" id="Log_Text">
             <property name="visible">True</property>

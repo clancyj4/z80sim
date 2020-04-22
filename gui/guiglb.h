@@ -106,7 +106,6 @@ extern GtkWidget *ioporttext;
 extern GtkWidget *in_port_prompt;
 extern GtkWidget *in_port_data;
 
-extern GtkTextBuffer *log_textbuffer;
 extern GtkWidget *logtext;
 extern GtkWidget *Log;
 

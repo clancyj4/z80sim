@@ -479,12 +479,12 @@ printf("Code_Break\n");
     Code_Selected = FALSE;
     Show_Code(PC, FALSE);
     sprintf(lstr, "Breakpoint %d set at 0x%04X\n", i, Selected_Code_Addr);
-//    Add_to_Log(lstr);
+    Add_to_Log(lstr);
   }
   else
   {
     sprintf(lstr, "Impossible! 0x%04X is not visible!\n", Selected_Code_Addr);
-//    Add_to_Log(lstr);
+    Add_to_Log(lstr);
   }
 }
 
@@ -516,7 +516,7 @@ void Code_UnBreak(void)
     Code_Selected = FALSE;			/* clear selection */
     sprintf(lstr, "Breakpoint %d cleared from 0x%04X\n",
 		bpc, Selected_Code_Addr);
-//    Add_to_Log(lstr);
+    Add_to_Log(lstr);
 
     Show_Code(PC, TRUE);
   }

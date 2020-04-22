@@ -52,6 +52,7 @@ int main(int argc, char *argv[])
   ade_entry = GTK_WIDGET(gtk_builder_get_object(builder, "ADE_REG_Entry"));
   ahl_entry = GTK_WIDGET(gtk_builder_get_object(builder, "AHL_REG_Entry"));
   mem_entry = GTK_WIDGET(gtk_builder_get_object(builder, "Mem_REG_Entry"));
+  Log = GTK_WIDGET(gtk_builder_get_object(builder, "Log"));
   ioporttext = GTK_WIDGET(gtk_builder_get_object(builder, "IOPortText"));
   in_port_prompt = GTK_WIDGET(gtk_builder_get_object(builder, "In_Port_Prompt"));
   in_port_data = GTK_WIDGET(gtk_builder_get_object(builder, "In_Port_Data"));

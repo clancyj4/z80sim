@@ -73,7 +73,6 @@ GtkWidget *ioporttext;
 GtkWidget *in_port_prompt;
 GtkWidget *in_port_data;
 
-GtkTextBuffer *log_textbuffer;
 GtkWidget *logtext;
 GtkWidget *Log;
 
