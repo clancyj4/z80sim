@@ -67,7 +67,6 @@ gboolean Code_Selected;
 
 struct IOPortStruct *IOPort[NUMIOPORTS];
 int current_port = 0;
-GtkTextBuffer *ioport_textbuffer;
 GtkWidget *ioport_win;
 GtkWidget *ioporttext;
 GtkWidget *in_port_prompt;

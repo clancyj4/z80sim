@@ -13,6 +13,8 @@
 #include "simglb.h"
 #include "guiglb.h"
 
+static GtkTextBuffer *ioport_textbuffer;
+
 /* Create an IO Port struct for a given port */
 /* In other words allocate memory for it and assign the IOPort[] */
 /* pointer.  Note that these memory allocations are never released. */

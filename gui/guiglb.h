@@ -100,7 +100,6 @@ extern WORD codelines[K64K];
 extern int buff_lines_start;       /* line at which the buffer starts */
 extern gboolean Code_Selected;
 
-extern GtkTextBuffer *ioport_textbuffer;
 extern GtkWidget *ioport_win;
 extern GtkWidget *ioporttext;
 extern GtkWidget *in_port_prompt;

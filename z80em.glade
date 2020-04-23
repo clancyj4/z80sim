@@ -206,6 +206,51 @@
       </object>
     </child>
   </object>
+  <object class="GtkAboutDialog">
+    <property name="can_focus">False</property>
+    <property name="type_hint">dialog</property>
+    <property name="program_name">Glade</property>
+    <property name="copyright" translatable="yes">Copyright (c) 2008 Udo Munk and Justin Clancy</property>
+    <property name="comments" translatable="yes">Z80 emulator by Udo Munk. GUI addons by Justin Clancy.</property>
+    <property name="logo_icon_name">image-missing</property>
+    <property name="license_type">gpl-2-0</property>
+    <child>
+      <placeholder/>
+    </child>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="lower">10</property>
+    <property name="upper">5000</property>
+    <property name="value">10</property>
+    <property name="step_increment">10</property>
+    <property name="page_increment">100</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment2">
+    <property name="upper">255</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkWindow" id="IOWIN">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Z80 I/O Port</property>
@@ -257,8 +302,8 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
-                <property name="active">True</property>
                 <property name="draw_indicator">True</property>
+                <property name="group">IOASCII</property>
                 <signal name="toggled" handler="on_IOHex_toggled" swapped="no"/>
               </object>
               <packing>
@@ -295,6 +340,10 @@
               <object class="GtkSpinButton" id="PortSpin">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="caps_lock_warning">False</property>
+                <property name="adjustment">adjustment2</property>
+                <property name="numeric">True</property>
+                <signal name="value-changed" handler="on_PortSpin_value_changed" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -359,39 +408,6 @@
             <property name="fill">True</property>
             <property name="position">2</property>
           </packing>
-        </child>
-      </object>
-    </child>
-  </object>
-  <object class="GtkAboutDialog">
-    <property name="can_focus">False</property>
-    <property name="type_hint">dialog</property>
-    <property name="program_name">Glade</property>
-    <property name="copyright" translatable="yes">Copyright (c) 2008 Udo Munk and Justin Clancy</property>
-    <property name="comments" translatable="yes">Z80 emulator by Udo Munk. GUI addons by Justin Clancy.</property>
-    <property name="logo_icon_name">image-missing</property>
-    <property name="license_type">gpl-2-0</property>
-    <child>
-      <placeholder/>
-    </child>
-    <child internal-child="vbox">
-      <object class="GtkBox">
-        <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
-        <child internal-child="action_area">
-          <object class="GtkButtonBox">
-            <property name="can_focus">False</property>
-            <property name="layout_style">end</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <placeholder/>
         </child>
       </object>
     </child>
@@ -553,6 +569,22 @@
                         <property name="can_focus">False</property>
                         <property name="label">Log</property>
                         <signal name="toggled" handler="on_log1_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkCheckMenuItem" id="imagemenuitem21">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label">IOPorts</property>
+                        <signal name="toggled" handler="on_ioport1_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkCheckMenuItem" id="imagemenuitem22">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Fill areas of memory.</property>
+                        <property name="label" translatable="yes">Mem Fill</property>
                       </object>
                     </child>
                   </object>
@@ -1200,9 +1232,10 @@
                               <object class="GtkSpinButton" id="SlowRunSpin">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
+                                <property name="adjustment">adjustment1</property>
                                 <property name="climb_rate">10</property>
                                 <property name="numeric">True</property>
-                                <signal name="value-changed" handler="on_PortSpin_value_changed" swapped="no"/>
+                                <signal name="value-changed" handler="on_SlowRunSpin_value_changed" swapped="no"/>
                               </object>
                               <packing>
                                 <property name="left_attach">4</property>
@@ -1838,6 +1871,7 @@
                       <object class="GtkScrolledWindow" id="scrolledwindow1">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="hscrollbar_policy">never</property>
                         <property name="shadow_type">in</property>
                         <child>
                           <object class="GtkTextView" id="Code_Text">
@@ -1845,9 +1879,9 @@
                             <property name="can_focus">True</property>
                             <property name="tooltip_text" translatable="yes">Adds a breakpoint to the selected code line.</property>
                             <property name="border_width">1</property>
+                            <property name="editable">False</property>
                             <property name="cursor_visible">False</property>
                             <property name="buffer">textbuffer1</property>
-                            <property name="overwrite">True</property>
                             <property name="accepts_tab">False</property>
                             <signal name="button-release-event" handler="on_Code_Text_button_release_event" swapped="no"/>
                           </object>

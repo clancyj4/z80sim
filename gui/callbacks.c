@@ -453,6 +453,7 @@ on_IOASCII_toggled                     (GtkToggleButton *togglebutton,
   if (IOPort[current_port] == NULL)	/* toggling a non-existent port? */
     Create_IOPort_Struct(current_port);	/* strange - but create it anyway */
 
+printf("ishex set to 0.\n");
   IOPort[current_port]->ishex = 0;
   Dump_IOPort(current_port);
 }
@@ -465,6 +466,7 @@ on_IOHex_toggled                       (GtkToggleButton *togglebutton,
   if (IOPort[current_port] == NULL)	/* toggling a non-existent port? */
     Create_IOPort_Struct(current_port);	/* strange - but create it anyway */
 
+printf("ishex set to 1.\n");
   IOPort[current_port]->ishex = 1;
   Dump_IOPort(current_port);
 }

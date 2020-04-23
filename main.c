@@ -56,12 +56,14 @@ int main(int argc, char *argv[])
   ioporttext = GTK_WIDGET(gtk_builder_get_object(builder, "IOPortText"));
   in_port_prompt = GTK_WIDGET(gtk_builder_get_object(builder, "In_Port_Prompt"));
   in_port_data = GTK_WIDGET(gtk_builder_get_object(builder, "In_Port_Data"));
+  ioport_win = GTK_WIDGET(gtk_builder_get_object(builder, "IOWIN"));
   memtext = GTK_WIDGET(gtk_builder_get_object(builder, "Mem_text"));
   Mem_Addr_Entry = GTK_WIDGET(gtk_builder_get_object(builder, "Mem_Addr_Entry"));
   Mem_Content_Entry = GTK_WIDGET(gtk_builder_get_object(builder, "Mem_Content_Entry"));
 
   g_object_unref(builder);
 
+  init_Log(Main);
   Dump_Reg = 'P';
   if (do_getfile("./test/z80main.bin"))
 //  if (do_getfile("./test/testops.bin"))
@@ -69,7 +71,6 @@ int main(int argc, char *argv[])
 //  if (do_getfile("./test/testscroll.bin"))
     return(1);
 
-  init_Log(Main);
   init_Flags(Main);
   init_Registers(Main);
   init_Memory(Main);
