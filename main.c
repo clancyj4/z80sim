@@ -1,5 +1,6 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "z80/sim.h"
 #include "z80/simglb.h"
@@ -60,6 +61,13 @@ int main(int argc, char *argv[])
   memtext = GTK_WIDGET(gtk_builder_get_object(builder, "Mem_text"));
   Mem_Addr_Entry = GTK_WIDGET(gtk_builder_get_object(builder, "Mem_Addr_Entry"));
   Mem_Content_Entry = GTK_WIDGET(gtk_builder_get_object(builder, "Mem_Content_Entry"));
+  about_win = GTK_WIDGET(gtk_builder_get_object(builder, "About_Dialogue"));
+  FCwin = GTK_WIDGET(gtk_builder_get_object(builder, "File_Chooser"));
+  FSwin = GTK_WIDGET(gtk_builder_get_object(builder, "File_Save"));
+  FPwin = GTK_WIDGET(gtk_builder_get_object(builder, "Project_File_Chooser"));
+
+  project_fn = malloc(1024);
+  strcpy(project_fn, "untitled.z80sim");
 
   g_object_unref(builder);
 

@@ -23,7 +23,7 @@ void
 on_open1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  Get_File();
+  Get_Project_File();
 }
 
 
@@ -31,7 +31,7 @@ void
 on_save1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+  Save_Project(project_fn);
 }
 
 
@@ -39,9 +39,64 @@ void
 on_save_as1_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-
+  Save_File();
 }
 
+
+void
+on_File_Cancel_Button_clicked          (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  Get_File_Cancel();
+}
+
+
+void
+on_Project_File_Cancel_Button_clicked          (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  Get_Project_File_Cancel();
+}
+
+
+void
+on_save_save_button_clicked          (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  Save_File_Save();
+}
+
+
+void
+on_save_cancel_button_clicked          (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  Save_File_Cancel();
+}
+
+
+void
+on_File_Open_Button_clicked            (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  Get_File_Open();
+}
+
+
+void
+on_Project_File_Open_Button_clicked            (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  Get_Project_File_Open();
+}
+
+
+void
+on_load1_activate                   (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+  Get_File();
+}
 
 void
 on_quit1_activate                      (GtkMenuItem     *menuitem,
@@ -97,7 +152,6 @@ on_Step_tool_clicked                   (GtkToolButton   *toolbutton,
   void do_step(void);
 
   do_step();
-//printf("ostc\n");
   Show_Code(PC, FALSE);
   Show_Registers();
   Show_Flags();
@@ -205,7 +259,6 @@ void
 on_buttonZ_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
-
   Toggle_Flag(1);
 }
 
@@ -215,7 +268,6 @@ on_buttonY_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
   Toggle_Flag(2);
-
 }
 
 
@@ -224,7 +276,6 @@ on_buttonH_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
   Toggle_Flag(3);
-
 }
 
 
@@ -233,7 +284,6 @@ on_buttonX_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
   Toggle_Flag(4);
-
 }
 
 
@@ -242,7 +292,6 @@ on_buttonP_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
   Toggle_Flag(5);
-
 }
 
 
@@ -251,7 +300,6 @@ on_buttonN_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
   Toggle_Flag(6);
-
 }
 
 
@@ -541,22 +589,6 @@ on_Clear_Break_Button_clicked          (GtkButton       *button,
                                         gpointer         user_data)
 {
   Code_UnBreak();
-}
-
-
-void
-on_File_Cancel_Button_clicked          (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  Get_File_Cancel();
-}
-
-
-void
-on_File_Open_Button_clicked            (GtkButton       *button,
-                                        gpointer         user_data)
-{
-  Get_File_Open();
 }
 
 

@@ -50,7 +50,12 @@ GtkWidget *   Mem_Addr_Entry;
 GtkWidget *   Mem_Content_Entry;
 GtkWidget *   in_port_prompt;
 GtkWidget *   in_port_data;
+GtkWidget *   about_win;
+GtkWidget *   FCwin;
+GtkWidget *   FSwin;
+GtkWidget *   FPwin;
 
+char *project_fn;
 GtkTextBuffer *mem_textbuffer;
 gboolean Memory_Selected;
 int mem_sel_row, mem_sel_col;

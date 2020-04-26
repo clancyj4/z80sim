@@ -78,7 +78,12 @@ extern GtkWidget *   ioporttext;
 extern GtkWidget *   memtext;
 extern GtkWidget *   Mem_Addr_Entry;
 extern GtkWidget *   Mem_Content_Entry;
+extern GtkWidget *   about_win;
+extern GtkWidget *   FCwin;
+extern GtkWidget *   FSwin;
+extern GtkWidget *   FPwin;
 
+extern char *project_fn;
 extern GtkTextBuffer *mem_textbuffer;
 extern gboolean Memory_Selected;
 extern int mem_sel_row, mem_sel_col;
