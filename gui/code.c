@@ -153,7 +153,6 @@ void set_PC_to_selection(void)
   Dump_From_Register(Dump_Reg);
   Show_Code(PC, FALSE);
   Code_Selected = FALSE;
-// printf("p2: dch\n");
   do_code_highlights();
 }
 
@@ -216,10 +215,9 @@ void Code_Clicked(void)
     selected_code_line = newline + buff_lines_start;
     Selected_Code_Addr = line2addr(selected_code_line);
     Code_Selected = TRUE;
-printf("(clicked) Processed click: newline=%d selected_code_line=%d Code_Selected=%d\n", newline, selected_code_line, Code_Selected);
+//printf("code: newline=%d selected_code_line=%d Code_Selected=%d\n", newline, selected_code_line, Code_Selected);
 
     darken_code(-1, redtag);			/* remove all old tag */
-// printf("p3: dch\n");
     do_code_highlights();			/* ..& redo them */
   }
 }

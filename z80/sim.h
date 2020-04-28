@@ -46,7 +46,7 @@
 #define	CNTL_BS		/* cntl-\ will stop running emulation */
 #define	WANT_TIM	/* activate runtime measurement */
 #define	HISIZE	100	/* number of entrys in history */
-#define	SBSIZE	4	/* number of software breakpoints */
+#define	SBSIZE	8	/* number of software breakpoints */
 /*#define FRONTPANEL*/	/* no frontpanel emulation */
 /*#define BUS_8080*/	/* no emulation of 8080 bus status */
 

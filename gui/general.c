@@ -139,6 +139,8 @@ void Save_File_Save(void)
     Add_to_Log(lstr);
     Save_Project(fn);
   }
+  strcpy(project_fn, fn);
+
   gtk_widget_hide(GTK_DIALOG(FSwin));
 }
 
@@ -166,7 +168,7 @@ void show_error(char *str)
 void Save_Project(char *fn)
 {
   FILE *fp;
-  WORD fred = 0x1234;
+  int i;
 
   printf("Saving project in %s.\n", fn);
 
@@ -179,7 +181,33 @@ void Save_Project(char *fn)
   }
 
   fprintf(fp, "#Z80sim\n");
-  fwrite(&fred, sizeof(WORD), 1, fp);
+  fprintf(fp, "%c\n", Dump_Reg);
+  fprintf(fp, "%s\n", project_fn);
+  fwrite(&A, sizeof(BYTE), 1, fp);
+  fwrite(&F, sizeof(BYTE), 1, fp);
+  fwrite(&B, sizeof(BYTE), 1, fp);
+  fwrite(&C, sizeof(BYTE), 1, fp);
+  fwrite(&D, sizeof(BYTE), 1, fp);
+  fwrite(&E, sizeof(BYTE), 1, fp);
+  fwrite(&H, sizeof(BYTE), 1, fp);
+  fwrite(&L, sizeof(BYTE), 1, fp);
+  fwrite(&IX, sizeof(WORD), 1, fp);
+  fwrite(&IY, sizeof(WORD), 1, fp);
+  fwrite(&A_, sizeof(BYTE), 1, fp);
+  fwrite(&F_, sizeof(BYTE), 1, fp);
+  fwrite(&B_, sizeof(BYTE), 1, fp);
+  fwrite(&C_, sizeof(BYTE), 1, fp);
+  fwrite(&D_, sizeof(BYTE), 1, fp);
+  fwrite(&E_, sizeof(BYTE), 1, fp);
+  fwrite(&H_, sizeof(BYTE), 1, fp);
+  fwrite(&L_, sizeof(BYTE), 1, fp);
+  fwrite(&R, sizeof(BYTE), 1, fp);
+  fwrite(&I, sizeof(BYTE), 1, fp);
+  fwrite(&PC, sizeof(BYTE *), 1, fp);
+  fwrite(&STACK, sizeof(BYTE *), 1, fp);
+  fwrite(&ram, K64K, 1, fp);
+  for (i = 0; i < SBSIZE; i++)
+    fwrite(&soft[i], sizeof(soft[0]), 1, fp);
 
   fclose(fp);
 }
@@ -189,7 +217,7 @@ void Read_Project(char *fn)
 {
   FILE *fp;
   char str[64];
-  WORD fred;
+  int i;
 
   fp = fopen(fn, "r");
   if (fp == NULL)
@@ -206,8 +234,37 @@ void Read_Project(char *fn)
     show_error(lstr);
   }
 
-  fread(&fred, sizeof(WORD), 1, fp);
-  printf("fred is %x\n", fred);
+  fscanf(fp, "%c\n", &Dump_Reg);
+  fgets(project_fn, 1024, fp);
+  fread(&A, sizeof(BYTE), 1, fp);
+  fread(&F, sizeof(BYTE), 1, fp);
+  fread(&B, sizeof(BYTE), 1, fp);
+  fread(&C, sizeof(BYTE), 1, fp);
+  fread(&D, sizeof(BYTE), 1, fp);
+  fread(&E, sizeof(BYTE), 1, fp);
+  fread(&H, sizeof(BYTE), 1, fp);
+  fread(&L, sizeof(BYTE), 1, fp);
+  fread(&IX, sizeof(WORD), 1, fp);
+  fread(&IY, sizeof(WORD), 1, fp);
+  fread(&A_, sizeof(BYTE), 1, fp);
+  fread(&F_, sizeof(BYTE), 1, fp);
+  fread(&B_, sizeof(BYTE), 1, fp);
+  fread(&C_, sizeof(BYTE), 1, fp);
+  fread(&D_, sizeof(BYTE), 1, fp);
+  fread(&E_, sizeof(BYTE), 1, fp);
+  fread(&H_, sizeof(BYTE), 1, fp);
+  fread(&L_, sizeof(BYTE), 1, fp);
+  fread(&R, sizeof(BYTE), 1, fp);
+  fread(&I, sizeof(BYTE), 1, fp);
+  fread(&PC, sizeof(BYTE *), 1, fp);
+  fread(&STACK, sizeof(BYTE *), 1, fp);
+  fread(&ram, K64K, 1, fp);
+  for (i = 0; i < SBSIZE; i++)
+    fread(&soft[i], sizeof(soft[0]), 1, fp);
+
+
+  Show_Code(PC, TRUE);
+  Show_All();
 
   fclose(fp);
 }
