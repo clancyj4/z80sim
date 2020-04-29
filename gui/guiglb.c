@@ -43,8 +43,6 @@ GtkWidget *   abc_entry;
 GtkWidget *   ade_entry;
 GtkWidget *   ahl_entry;
 GtkWidget *   mem_entry;
-GtkWidget *   ioporttext;
-GtkWidget *   ioporttext;
 GtkWidget *   memtext;
 GtkWidget *   Mem_Addr_Entry;
 GtkWidget *   Mem_Content_Entry;

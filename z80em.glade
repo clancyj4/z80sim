@@ -147,47 +147,9 @@
       </object>
     </child>
   </object>
-  <object class="GtkImage">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-open</property>
-  </object>
-  <object class="GtkImage">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-save</property>
-  </object>
-  <object class="GtkImage">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-save-as</property>
-  </object>
-  <object class="GtkImage">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-open</property>
-  </object>
-  <object class="GtkImage">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-new</property>
-  </object>
-  <object class="GtkAdjustment" id="adjustment1">
-    <property name="lower">10</property>
-    <property name="upper">5000</property>
-    <property name="value">10</property>
-    <property name="step_increment">10</property>
-    <property name="page_increment">100</property>
-  </object>
-  <object class="GtkAdjustment" id="adjustment2">
-    <property name="upper">255</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
   <object class="GtkWindow" id="IOWIN">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Z80 I/O Port</property>
-    <signal name="destroy" handler="on_IOWIN_destroy" swapped="no"/>
     <child>
       <placeholder/>
     </child>
@@ -197,11 +159,29 @@
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkTextView" id="IOPortText">
-            <property name="width_request">200</property>
-            <property name="height_request">300</property>
+          <object class="GtkAlignment">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkScrolledWindow">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="hscrollbar_policy">never</property>
+                <property name="shadow_type">in</property>
+                <property name="min_content_width">200</property>
+                <property name="min_content_height">300</property>
+                <child>
+                  <object class="GtkTextView" id="IOPortText">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="border_width">1</property>
+                    <property name="editable">False</property>
+                    <property name="cursor_visible">False</property>
+                    <property name="accepts_tab">False</property>
+                  </object>
+                </child>
+              </object>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -246,6 +226,9 @@
               </packing>
             </child>
             <child>
+              <placeholder/>
+            </child>
+            <child>
               <object class="GtkSeparator">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -253,7 +236,8 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">2</property>
+                <property name="padding">1</property>
+                <property name="position">3</property>
               </packing>
             </child>
             <child>
@@ -266,13 +250,14 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">3</property>
+                <property name="position">4</property>
               </packing>
             </child>
             <child>
-              <object class="GtkSpinButton" id="PortSpin">
+              <object class="GtkSpinButton" id="PortSpin1">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="text" translatable="yes">0</property>
                 <property name="caps_lock_warning">False</property>
                 <property name="adjustment">adjustment2</property>
                 <property name="numeric">True</property>
@@ -281,7 +266,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">4</property>
+                <property name="position">5</property>
               </packing>
             </child>
           </object>
@@ -296,7 +281,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkEntry" id="In_Port_Prompt">
+              <object class="GtkEntry" id="In_Port_Prompt1">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="text" translatable="yes">No Input Required</property>
@@ -308,7 +293,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkEntry" id="In_Port_Data">
+              <object class="GtkEntry" id="In_Port_Data1">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="max_length">4</property>
@@ -322,12 +307,11 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="In_Port_Submit">
+              <object class="GtkButton" id="In_Port_Submit1">
                 <property name="label" translatable="yes">Submit Input</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <signal name="clicked" handler="on_In_Port_Submit_clicked" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -345,6 +329,43 @@
       </object>
     </child>
   </object>
+  <object class="GtkImage">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-save</property>
+  </object>
+  <object class="GtkImage">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-save-as</property>
+  </object>
+  <object class="GtkImage">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-open</property>
+  </object>
+  <object class="GtkImage">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-new</property>
+  </object>
+  <object class="GtkImage">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-open</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="lower">10</property>
+    <property name="upper">5000</property>
+    <property name="value">10</property>
+    <property name="step_increment">10</property>
+    <property name="page_increment">100</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment2">
+    <property name="upper">255</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkTextBuffer" id="textbuffer1">
     <property name="text" translatable="yes">‫‬*  &gt;  0000: XX XX XX XX	LD		BC,0230H</property>
   </object>
@@ -355,7 +376,6 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Z80 Emulator</property>
-    <signal name="button-release-event" handler="on_Code_Text_button_release_event" swapped="no"/>
     <signal name="delete-event" handler="gtk_main_quit" swapped="no"/>
     <child>
       <placeholder/>
@@ -659,6 +679,12 @@
             <property name="fill">False</property>
             <property name="position">1</property>
           </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
         </child>
         <child>
           <object class="GtkBox" id="box3">
@@ -1866,7 +1892,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
-            <property name="position">2</property>
+            <property name="position">4</property>
           </packing>
         </child>
       </object>
@@ -2093,7 +2119,7 @@
   <object class="GtkWindow" id="Log">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Z80 Emulator Log</property>
-    <signal name="delete-event" handler="on_Log_delete_event" swapped="no"/>
+    <signal name="destroy" handler="show_log(FALSE)" swapped="no"/>
     <child>
       <placeholder/>
     </child>

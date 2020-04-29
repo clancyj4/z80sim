@@ -27,8 +27,7 @@ void Create_IOPort_Struct(int port)
 
   if (IOPort[port] != NULL)
   {
-    fprintf(stderr, "DEBUG: Structure already exists for port %d\n",
-		port);
+    fprintf(stderr, "DEBUG: Structure already exists for port %d\n", port);
     return;
   }
 
@@ -42,7 +41,7 @@ void Create_IOPort_Struct(int port)
     exit(99);						/* Time to BAIL OUT */
   }
 
-//printf("Assigned struct for port %d\n", port);
+printf("Assigned struct for port %d\n", port);
 
   IOPort[port]->obuffer[0] = '\0';			/* clear the out buffer */
   IOPort[port]->out_ptr = 0;				/* ..set ptr to start */
@@ -63,23 +62,27 @@ void Dump_IOPort(int port)
 {
   char whole_buffer[IOOUTBUFLEN * 4];		/* 4x in case of Hex */
   char bchar;
-  int i, ascptr;
+  int i, ascptr, hcount;
   GtkTextIter end;
 
   whole_buffer[0] = 0;				/* start with a clean buff */
 
   if (IOPort[port] == NULL)			/* struct exists? */
-  {
-//    fprintf(stderr, "Attempting to dump from non existing port %d\n", port);
     return;
-  }
 
   if (IOPort[port]->ishex)			/* dump in hex? */
   {
+    hcount = 0;
     for (i = 0; i < IOPort[port]->out_ptr; i++)
     {
       sprintf(tstr, "%02X ", IOPort[port]->obuffer[i]);
       strcat(whole_buffer, tstr);
+      hcount++;
+      if (hcount > PORT_HEX_LEN - 1)
+      {
+        hcount = 0;
+        strcat(whole_buffer, "\n");
+      }
     }
   }
   else
@@ -163,13 +166,7 @@ void init_IOport(void)
 
   PangoFontDescription *iofont;
 
-//  ioport_win = create_IOWIN();
-
-//  ioporttext = lookup_widget(ioport_win, "IOPortText");
   ioport_textbuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ioporttext));
-
-//  in_port_prompt = lookup_widget(ioport_win, "In_Port_Prompt");
-//  in_port_data = lookup_widget(ioport_win, "In_Port_Data");
 
   iofont = pango_font_description_from_string("Monospace");
   gtk_widget_modify_font(ioporttext, iofont);

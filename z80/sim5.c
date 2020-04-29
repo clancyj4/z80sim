@@ -343,30 +343,14 @@ static int trap_fd(void)
 
 static int op_popiy(void)		/* POP IY */
 {
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	IY = *STACK++;
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	IY += *STACK++ << 8;
 	return(14);
 }
 
 static int op_pusiy(void)		/* PUSH IY */
 {
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = IY >> 8;
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = IY;
 	return(15);
 }

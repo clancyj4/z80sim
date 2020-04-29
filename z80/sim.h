@@ -39,7 +39,6 @@
 #define CPU_SPEED 0	/* default CPU speed */
 /*#define Z80_UNDOC*/	/* compile undocumented Z80 instructions */
 /*#define WANT_INT*/	/* activate CPU's interrupts */
-#define WANT_SPC	/* activate SP over-/underrun handling 0000<->FFFF */
 #define WANT_PCC	/* activate PC overrun handling FFFF->0000 */
 #define WANT_GUI
 #define	CNTL_C		/* cntl-c will stop running emulation */

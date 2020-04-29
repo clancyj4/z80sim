@@ -321,7 +321,6 @@ static char *regiy = "IY";
 char Disass_Str[64];
 char Opcode_Str[64];
 
-#ifdef WANT_GUI
 
 /* Set up machine code hex in Opcode_Str for GUI disassembly */
 
@@ -355,7 +354,6 @@ void get_opcodes(unsigned char **p, int len)
       sprintf(Opcode_Str, "xx OW OW xx");
   }
 }
-#endif
 
 /*
  *	The function disass() is the only global function of
@@ -376,12 +374,7 @@ void disass(unsigned char **p, int adr)
 
 	addr = adr;
 	len = (*optab[**p].fun)	(optab[**p].text, p);
-#ifndef WANT_GUI
-	printf(Disass_Str);
-#endif
-#ifdef WANT_GUI
         get_opcodes(p, len);
-#endif
 	*p += len;
 }
 

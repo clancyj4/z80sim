@@ -26,6 +26,7 @@
 				/* 64K addresses - if so, change this */
 #define IOOUTBUFLEN	2048	/* length of output buffer in bytes */
 #define IOINBUFLEN	256	/* length of input buffer in bytes */
+#define PORT_HEX_LEN    16      /* Length of entries in a port hex dump */
 
 #define NFLAGS  8
 
@@ -73,7 +74,6 @@ extern GtkWidget *   abc_entry;
 extern GtkWidget *   ade_entry;
 extern GtkWidget *   ahl_entry;
 extern GtkWidget *   mem_entry;
-extern GtkWidget *   ioporttext;
 extern GtkWidget *   ioporttext;
 extern GtkWidget *   memtext;
 extern GtkWidget *   Mem_Addr_Entry;

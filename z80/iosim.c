@@ -108,6 +108,7 @@ BYTE io_in(BYTE adr)
 void io_out(BYTE adr, BYTE data)
 {
 	(*port[adr][1])	(data);
+	IOPort_OUT(adr, data);
 }
 
 /*
