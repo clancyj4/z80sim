@@ -75,6 +75,7 @@ extern GtkWidget *   ade_entry;
 extern GtkWidget *   ahl_entry;
 extern GtkWidget *   mem_entry;
 extern GtkWidget *   ioporttext;
+extern GtkWidget *   ioportintext;
 extern GtkWidget *   memtext;
 extern GtkWidget *   Mem_Addr_Entry;
 extern GtkWidget *   Mem_Content_Entry;
@@ -91,8 +92,7 @@ extern int mem_buff_row_start;
 extern BYTE Selected_Memory_Content;
 extern WORD Selected_Memory_Addr;
 
-extern GtkWidget *   in_port_prompt;
-extern GtkWidget *   in_port_data;
+extern GtkWidget *   inportprompt;
 
 #define BREAK_OP 0x76
 #define K64K (64 * 1024)
@@ -106,9 +106,6 @@ extern int buff_lines_start;       /* line at which the buffer starts */
 extern gboolean Code_Selected;
 
 extern GtkWidget *ioport_win;
-extern GtkWidget *ioporttext;
-extern GtkWidget *in_port_prompt;
-extern GtkWidget *in_port_data;
 
 extern GtkWidget *logtext;
 extern GtkWidget *Log;

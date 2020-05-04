@@ -14,6 +14,8 @@
 #include "guiglb.h"
 
 static GtkTextBuffer *ioport_textbuffer;
+static GtkTextBuffer *ioportin_textbuffer;
+static GtkTextBuffer *inportprompt_textbuffer;
 
 /* Create an IO Port struct for a given port */
 /* In other words allocate memory for it and assign the IOPort[] */
@@ -96,6 +98,8 @@ void Dump_IOPort(int port)
 	 || (bchar == 0x0a)
 	 )
         whole_buffer[ascptr++] = bchar;
+      else
+        whole_buffer[ascptr++] = '.';
     }
 
     whole_buffer[ascptr] = (char)0;		/* terminate string */
@@ -122,21 +126,35 @@ void Show_IOport(GtkWidget *widget)
 
 
 /* get a byte (char?) from the input part of the Port window */
-/* Just a stub at the mo' - returns '7' */
 /* What we really want to do is have a queue */
 
 BYTE IOPort_IN(int port)
 {
+  char whole_buffer[IOINBUFLEN * 4];		/* 4x in case of Hex */
+  BYTE c;
+  int i;
+
   if (IOPort[port] == NULL)				/* struct exists? */
     Create_IOPort_Struct(port);
 
   printf("IOPort_IN: port=%d in_len=%d in_ptr=%d\n",
 	port, IOPort[port]->in_len, IOPort[port]->in_ptr);
 
-  sprintf(tstr, "Port %d requires input", port);
-  gtk_entry_set_text(GTK_ENTRY(in_port_prompt), tstr);
+  if (IOPort[port]->in_len == 0)
+  {
+    sprintf(tstr, "Port %d requires input", port);
+    Add_to_Log(tstr);
+    show_log(TRUE);
+    gtk_text_buffer_set_text(inportprompt_textbuffer, "Input Required", -1);
 
-  return('7');
+/* somehow keep the gtk main loop running so the interface updates and allows the editing of the ioportin_textbuffer,
+but wait for the input submission button the be pressed */
+
+    i = gtk_text_buffer_get_char_count(ioportin_textbuffer);
+    printf("in port buff len is %d.\n", i);
+  }
+
+  return(c);
 }
 
 
@@ -167,6 +185,8 @@ void init_IOport(void)
   PangoFontDescription *iofont;
 
   ioport_textbuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ioporttext));
+  ioportin_textbuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ioportintext));
+  inportprompt_textbuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(inportprompt));
 
   iofont = pango_font_description_from_string("Monospace");
   gtk_widget_modify_font(ioporttext, iofont);

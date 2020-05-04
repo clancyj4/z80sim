@@ -46,8 +46,6 @@ GtkWidget *   mem_entry;
 GtkWidget *   memtext;
 GtkWidget *   Mem_Addr_Entry;
 GtkWidget *   Mem_Content_Entry;
-GtkWidget *   in_port_prompt;
-GtkWidget *   in_port_data;
 GtkWidget *   about_win;
 GtkWidget *   FCwin;
 GtkWidget *   FSwin;
@@ -69,11 +67,11 @@ int buff_lines_start;           /* line at which the buffer starts */
 gboolean Code_Selected;
 
 struct IOPortStruct *IOPort[NUMIOPORTS];
+GtkWidget *   inportprompt;
 int current_port = 0;
 GtkWidget *ioport_win;
 GtkWidget *ioporttext;
-GtkWidget *in_port_prompt;
-GtkWidget *in_port_data;
+GtkWidget *ioportintext;
 
 GtkWidget *logtext;
 GtkWidget *Log;
