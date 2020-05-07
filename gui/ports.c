@@ -16,6 +16,8 @@
 static GtkTextBuffer *ioport_textbuffer;
 static GtkTextBuffer *ioportin_textbuffer;
 static GtkTextBuffer *inportprompt_textbuffer;
+static GtkTextBuffer *ioinqueue_textbuffer;
+static BYTE prev_cpu_state;
 
 /* Create an IO Port struct for a given port */
 /* In other words allocate memory for it and assign the IOPort[] */
@@ -125,16 +127,14 @@ void Show_IOport(GtkWidget *widget)
 }
 
 
-/* get a byte (char?) from the input part of the Port window */
-/* What we really want to do is have a queue */
+/* get a byte from the input part of the Port window */
 
 BYTE IOPort_IN(int port)
 {
-  char whole_buffer[IOINBUFLEN * 4];		/* 4x in case of Hex */
+  char whole_buffer[IOINBUFLEN * 3];		/* 3x in case of Hex */
   BYTE c;
-  int i;
 
-  if (IOPort[port] == NULL)				/* struct exists? */
+  if (IOPort[port] == NULL)			/* struct exists? */
     Create_IOPort_Struct(port);
 
   printf("IOPort_IN: port=%d in_len=%d in_ptr=%d\n",
@@ -142,19 +142,70 @@ BYTE IOPort_IN(int port)
 
   if (IOPort[port]->in_len == 0)
   {
-    sprintf(tstr, "Port %d requires input", port);
+    sprintf(tstr, "Port %d requires input - IN opcode will return 0x00 until it is supplied.\n", port);
     Add_to_Log(tstr);
     show_log(TRUE);
     gtk_text_buffer_set_text(inportprompt_textbuffer, "Input Required", -1);
 
-/* somehow keep the gtk main loop running so the interface updates and allows the editing of the ioportin_textbuffer,
-but wait for the input submission button the be pressed */
-
-    i = gtk_text_buffer_get_char_count(ioportin_textbuffer);
-    printf("in port buff len is %d.\n", i);
+    return((BYTE)0);
   }
 
+  c = IOPort[port]->ibuffer[IOPort[port]->in_ptr++];
+  IOPort[port]->in_len--;
+
+  set_in_queue_buffer(port);
+
   return(c);
+}
+
+
+/* called when the io port in submit is called. */
+/* assigns the content of the ioportin_textbuffer to the IOPort struct. */
+
+void assign_in_port_to_buff(int port)
+{
+  GtkTextIter start, end;
+  char * whole_buffer;
+  int i;
+  char str[8];
+  int strptr = 0;
+
+  if (IOPort[port] == NULL)			/* struct exists? */
+    Create_IOPort_Struct(port);
+
+  IOPort[port]->in_ptr = 0;			/* start from scratch */
+  
+  gtk_text_buffer_get_start_iter(ioportin_textbuffer, &start);
+  gtk_text_buffer_get_end_iter(ioportin_textbuffer, &end);
+
+  whole_buffer = gtk_text_iter_get_text(&start, &end);
+  printf("in text=%s\n", whole_buffer);
+
+  IOPort[port]->in_len = gtk_text_buffer_get_char_count(ioportin_textbuffer);
+  printf("in port buff len is %d.\n", IOPort[port]->in_len);
+
+  if (IOPort[port]->ishex)			/* scan in hex? */
+  {
+    for (i = 0; i < IOPort[port]->in_len + 1; i++)
+      if (*(whole_buffer + i) == ' ' || i == IOPort[port]->in_len)
+      {
+        str[strptr] = 0;
+        IOPort[port]->ibuffer[IOPort[port]->in_ptr++] = (char)strtol(str, NULL, 16);
+        strptr = 0;
+      }
+      else
+        str[strptr++] = *(whole_buffer + i);
+  }
+  else
+    strcpy(IOPort[port]->ibuffer, whole_buffer);	/* just ASCII */
+
+  printf("Converted string is \"%s\"\n", IOPort[port]->ibuffer);
+  IOPort[port]->in_ptr = 0;
+
+  set_in_queue_buffer(port);
+
+  gtk_text_buffer_set_text(inportprompt_textbuffer, "No Input Required", -1);
+  gtk_text_buffer_delete(ioportin_textbuffer, &start, &end);
 }
 
 
@@ -186,6 +237,7 @@ void init_IOport(void)
 
   ioport_textbuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ioporttext));
   ioportin_textbuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ioportintext));
+  ioinqueue_textbuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ioinqueuetext));
   inportprompt_textbuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(inportprompt));
 
   iofont = pango_font_description_from_string("Monospace");
@@ -196,3 +248,27 @@ void init_IOport(void)
   for (i = 0; i < NUMIOPORTS; i++)
     IOPort[i] = NULL;
 }
+
+
+void set_in_queue_buffer(int port)
+{
+  char buffer[IOINBUFLEN * 3];
+  char tstr[4];
+  int i;
+  int ptr;
+
+  ptr = IOPort[port]->in_ptr;
+  buffer[0] = (char)0;
+
+  if (IOPort[port]->ishex)
+    for (i = 0; i < IOPort[port]->in_len; i++)
+    {
+      sprintf(tstr, "%02X ", IOPort[port]->ibuffer[ptr++]);
+      strcat(buffer, tstr);
+    }
+  else
+    strcat(buffer, IOPort[port]->ibuffer + ptr);
+
+  gtk_text_buffer_set_text(ioinqueue_textbuffer, buffer, -1);
+}
+

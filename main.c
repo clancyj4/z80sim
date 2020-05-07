@@ -57,6 +57,7 @@ int main(int argc, char *argv[])
   ioporttext = GTK_WIDGET(gtk_builder_get_object(builder, "IOPortText"));
   ioportintext = GTK_WIDGET(gtk_builder_get_object(builder, "In_Port_Data"));
   inportprompt = GTK_WIDGET(gtk_builder_get_object(builder, "In_Port_Prompt"));
+  ioinqueuetext = GTK_WIDGET(gtk_builder_get_object(builder, "IO_In_Queue"));
   ioport_win = GTK_WIDGET(gtk_builder_get_object(builder, "IOWIN"));
   memtext = GTK_WIDGET(gtk_builder_get_object(builder, "Mem_text"));
   Mem_Addr_Entry = GTK_WIDGET(gtk_builder_get_object(builder, "Mem_Addr_Entry"));

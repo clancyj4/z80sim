@@ -27,7 +27,7 @@ int check_gui_break(void)
 
   if (cpu_state != CONTIN_RUN)
   {
-    fprintf(stderr, "check_gui_break called when cpu_state is not CONTIN\n");
+//    fprintf(stderr, "check_gui_break called when cpu_state is not CONTIN\n");
     return(0);
   }
 

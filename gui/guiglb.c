@@ -72,6 +72,7 @@ int current_port = 0;
 GtkWidget *ioport_win;
 GtkWidget *ioporttext;
 GtkWidget *ioportintext;
+GtkWidget *ioinqueuetext;
 
 GtkWidget *logtext;
 GtkWidget *Log;

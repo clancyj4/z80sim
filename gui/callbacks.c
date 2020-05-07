@@ -649,7 +649,7 @@ void
 on_In_Port_Submit_clicked              (GtkButton       *button,
                                         gpointer         user_data)
 {
-
+  assign_in_port_to_buff(current_port);
 }
 
 

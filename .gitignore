@@ -1,6 +1,4 @@
 ./obj
-./emugl3.glade
-./z80em2.glade
 ./z80sim
 ./*.bak
 */*.bak

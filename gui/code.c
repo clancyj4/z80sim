@@ -318,7 +318,7 @@ void Show_Code(BYTE *disas_addr, gboolean force)
 
   disas_addr_line = codelines[disas_addr - ram];	/* get line from disas addr */
 
-printf("P1: disas_addr_line=%d force=%d buff_lines_start=%ld buff_lines_end=%ld\n", disas_addr_line, force, buff_lines_start, buff_lines_start + CODE_LIST_LENGTH);
+// printf("P1: disas_addr_line=%d force=%d buff_lines_start=%ld buff_lines_end=%ld\n", disas_addr_line, force, buff_lines_start, buff_lines_start + CODE_LIST_LENGTH);
 
   /*
    * (1) If 'disas_addr_line' is not in the text buffer rebuild the text buffer.

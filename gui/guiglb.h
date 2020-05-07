@@ -76,6 +76,7 @@ extern GtkWidget *   ahl_entry;
 extern GtkWidget *   mem_entry;
 extern GtkWidget *   ioporttext;
 extern GtkWidget *   ioportintext;
+extern GtkWidget *   ioinqueuetext;
 extern GtkWidget *   memtext;
 extern GtkWidget *   Mem_Addr_Entry;
 extern GtkWidget *   Mem_Content_Entry;
