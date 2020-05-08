@@ -111,4 +111,7 @@ extern GtkWidget *ioport_win;
 extern GtkWidget *logtext;
 extern GtkWidget *Log;
 
+extern GtkWidget *breakstext;
+extern GtkWidget *breakspassspin;
+extern GtkWidget *Breaks;
 #endif

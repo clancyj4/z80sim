@@ -37,7 +37,6 @@ int main(int argc, char *argv[])
     sflentry = GTK_WIDGET(gtk_builder_get_object(builder, FlagEnt[i]));
     flentry[i] = sflentry;
   }
-  logtext = GTK_WIDGET(gtk_builder_get_object(builder, "Log_Text"));
   a_entry = GTK_WIDGET(gtk_builder_get_object(builder, "A_REG_Entry"));
   bc_entry = GTK_WIDGET(gtk_builder_get_object(builder, "BC_REG_Entry"));
   de_entry = GTK_WIDGET(gtk_builder_get_object(builder, "DE_REG_Entry"));
@@ -54,6 +53,7 @@ int main(int argc, char *argv[])
   ahl_entry = GTK_WIDGET(gtk_builder_get_object(builder, "AHL_REG_Entry"));
   mem_entry = GTK_WIDGET(gtk_builder_get_object(builder, "Mem_REG_Entry"));
   Log = GTK_WIDGET(gtk_builder_get_object(builder, "Log"));
+  logtext = GTK_WIDGET(gtk_builder_get_object(builder, "Log_Text"));
   ioporttext = GTK_WIDGET(gtk_builder_get_object(builder, "IOPortText"));
   ioportintext = GTK_WIDGET(gtk_builder_get_object(builder, "In_Port_Data"));
   inportprompt = GTK_WIDGET(gtk_builder_get_object(builder, "In_Port_Prompt"));
@@ -66,6 +66,9 @@ int main(int argc, char *argv[])
   FCwin = GTK_WIDGET(gtk_builder_get_object(builder, "File_Chooser"));
   FSwin = GTK_WIDGET(gtk_builder_get_object(builder, "File_Save"));
   FPwin = GTK_WIDGET(gtk_builder_get_object(builder, "Project_File_Chooser"));
+  Breaks = GTK_WIDGET(gtk_builder_get_object(builder, "Breakpoints"));
+  breakstext = GTK_WIDGET(gtk_builder_get_object(builder, "Breakpoints_Text"));
+  breakspassspin = GTK_WIDGET(gtk_builder_get_object(builder, "Breaks_Pass_Count"));
 
   project_fn = malloc(1024);
   strcpy(project_fn, "untitled.z80sim");
@@ -85,6 +88,7 @@ int main(int argc, char *argv[])
   init_Memory(Main);
   init_Code(Main);
   init_IOport();
+  init_Breaks();
 
   Dump_From_Register(Dump_Reg);
   Show_Flags();

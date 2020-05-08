@@ -112,7 +112,7 @@ WORD line2addr(unsigned int line)
    * space record the line of disassembly. This assumes that *all* the
    * address space is code, but it shouldn't matter unless someone sets the
    * PC to point to data (which could be interesting, anyway).
-   * Obviously this makes debugging self modifying code impossible.
+   * Obviously this makes debugging self modifying code impossible (and shame on you if you try).
    */
 
 void build_code_cache(void)
@@ -478,6 +478,7 @@ printf("Code_Break\n");
     Show_Code(PC, FALSE);
     sprintf(lstr, "Breakpoint %d set at 0x%04X\n", i, Selected_Code_Addr);
     Add_to_Log(lstr);
+    show_breaks_content();
   }
   else
   {

@@ -27,7 +27,6 @@ GtkWidget *   optcodeb;
 GtkWidget *   slowrunspin;
 GtkWidget *   flentry[NFLAGS];
 GtkWidget *   sflentry;
-GtkWidget *   logtext;
 GtkWidget *   a_entry;
 GtkWidget *   bc_entry;
 GtkWidget *   de_entry;
@@ -77,3 +76,6 @@ GtkWidget *ioinqueuetext;
 GtkWidget *logtext;
 GtkWidget *Log;
 
+GtkWidget *breakstext;
+GtkWidget *breakspassspin;
+GtkWidget *Breaks;

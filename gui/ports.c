@@ -17,7 +17,6 @@ static GtkTextBuffer *ioport_textbuffer;
 static GtkTextBuffer *ioportin_textbuffer;
 static GtkTextBuffer *inportprompt_textbuffer;
 static GtkTextBuffer *ioinqueue_textbuffer;
-static BYTE prev_cpu_state;
 
 /* Create an IO Port struct for a given port */
 /* In other words allocate memory for it and assign the IOPort[] */
