@@ -27,7 +27,6 @@ GtkWidget *   optcodeb;
 GtkWidget *   slowrunspin;
 GtkWidget *   flentry[NFLAGS];
 GtkWidget *   sflentry;
-GtkWidget *   logtext;
 GtkWidget *   a_entry;
 GtkWidget *   bc_entry;
 GtkWidget *   de_entry;
@@ -43,13 +42,9 @@ GtkWidget *   abc_entry;
 GtkWidget *   ade_entry;
 GtkWidget *   ahl_entry;
 GtkWidget *   mem_entry;
-GtkWidget *   ioporttext;
-GtkWidget *   ioporttext;
 GtkWidget *   memtext;
 GtkWidget *   Mem_Addr_Entry;
 GtkWidget *   Mem_Content_Entry;
-GtkWidget *   in_port_prompt;
-GtkWidget *   in_port_data;
 GtkWidget *   about_win;
 GtkWidget *   FCwin;
 GtkWidget *   FSwin;
@@ -71,12 +66,16 @@ int buff_lines_start;           /* line at which the buffer starts */
 gboolean Code_Selected;
 
 struct IOPortStruct *IOPort[NUMIOPORTS];
+GtkWidget *   inportprompt;
 int current_port = 0;
 GtkWidget *ioport_win;
 GtkWidget *ioporttext;
-GtkWidget *in_port_prompt;
-GtkWidget *in_port_data;
+GtkWidget *ioportintext;
+GtkWidget *ioinqueuetext;
 
 GtkWidget *logtext;
 GtkWidget *Log;
 
+GtkWidget *breakstext;
+GtkWidget *breakspassspin;
+GtkWidget *Breaks;

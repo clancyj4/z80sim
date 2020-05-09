@@ -112,7 +112,7 @@ WORD line2addr(unsigned int line)
    * space record the line of disassembly. This assumes that *all* the
    * address space is code, but it shouldn't matter unless someone sets the
    * PC to point to data (which could be interesting, anyway).
-   * Obviously this makes debugging self modifying code impossible.
+   * Obviously this makes debugging self modifying code impossible (and shame on you if you try).
    */
 
 void build_code_cache(void)
@@ -318,7 +318,7 @@ void Show_Code(BYTE *disas_addr, gboolean force)
 
   disas_addr_line = codelines[disas_addr - ram];	/* get line from disas addr */
 
-printf("P1: disas_addr_line=%d force=%d buff_lines_start=%ld buff_lines_end=%ld\n", disas_addr_line, force, buff_lines_start, buff_lines_start + CODE_LIST_LENGTH);
+// printf("P1: disas_addr_line=%d force=%d buff_lines_start=%ld buff_lines_end=%ld\n", disas_addr_line, force, buff_lines_start, buff_lines_start + CODE_LIST_LENGTH);
 
   /*
    * (1) If 'disas_addr_line' is not in the text buffer rebuild the text buffer.
@@ -478,6 +478,7 @@ printf("Code_Break\n");
     Show_Code(PC, FALSE);
     sprintf(lstr, "Breakpoint %d set at 0x%04X\n", i, Selected_Code_Addr);
     Add_to_Log(lstr);
+    show_breaks_content();
   }
   else
   {

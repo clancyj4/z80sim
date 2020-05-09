@@ -90,7 +90,6 @@ static void quit_int(int sig)
 
 static void term_int(int sig)
 {
-	exit_io();
 	int_off();
 	tcsetattr(0, TCSADRAIN, &old_term);
 	puts("\nKilled by user");

@@ -182,6 +182,7 @@ void Save_Project(char *fn)
 
   fprintf(fp, "#Z80sim\n");
   fprintf(fp, "%c\n", Dump_Reg);
+  fprintf(fp, "%d\n", run_slow_pref);
   fprintf(fp, "%s\n", project_fn);
   fwrite(&A, sizeof(BYTE), 1, fp);
   fwrite(&F, sizeof(BYTE), 1, fp);
@@ -235,6 +236,7 @@ void Read_Project(char *fn)
   }
 
   fscanf(fp, "%c\n", &Dump_Reg);
+  fscanf(fp, "%d\n", &run_slow_pref);
   fgets(project_fn, 1024, fp);
   fread(&A, sizeof(BYTE), 1, fp);
   fread(&F, sizeof(BYTE), 1, fp);

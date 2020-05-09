@@ -54,6 +54,7 @@ void Toggle_Flag(int flag);
 void Update_Memory();
 void Update_Registers(void);
 void Zero_Registers(void);
+void init_Breaks(void);
 
 int check_gui_break(void);
 int do_break(char *s);

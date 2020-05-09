@@ -364,15 +364,7 @@ static int op_reti(void)		/* RETI */
 	register unsigned i;
 
 	i = *STACK++;
-#ifdef WANT_SPC
-	if (STACK >= ram + 65536L)
-		STACK =	ram;
-#endif
 	i += *STACK++ << 8;
-#ifdef WANT_SPC
-	if (STACK >= ram + 65536L)
-		STACK =	ram;
-#endif
 	PC = ram + i;
 	return(14);
 }
@@ -382,15 +374,7 @@ static int op_retn(void)		/* RETN */
 	register unsigned i;
 
 	i = *STACK++;
-#ifdef WANT_SPC
-	if (STACK >= ram + 65536L)
-		STACK =	ram;
-#endif
 	i += *STACK++ << 8;
-#ifdef WANT_SPC
-	if (STACK >= ram + 65536L)
-		STACK =	ram;
-#endif
 	PC = ram + i;
 	if (IFF & 2)
 		IFF |= 1;

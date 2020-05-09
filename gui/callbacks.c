@@ -577,7 +577,7 @@ on_go1_activate                        (GtkMenuItem     *menuitem,
 
 
 void
-on_memory_fill1_activate               (GtkMenuItem     *menuitem,
+on_memory_fill_activated               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 
@@ -649,7 +649,7 @@ void
 on_In_Port_Submit_clicked              (GtkButton       *button,
                                         gpointer         user_data)
 {
-
+  assign_in_port_to_buff(current_port);
 }
 
 
@@ -666,5 +666,37 @@ on_IOWIN_destroy                       (GtkWidget       *object,
                                         gpointer         user_data)
 {
   fprintf(stderr, "IOWIN destroy called.\n");
+}
+
+
+void
+on_breaks_activated                    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+  if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menuitem)))
+    show_breaks(TRUE);
+  else
+    show_breaks(FALSE);
+}
+
+
+gboolean
+on_Break_Text_button_release_event      (GtkWidget       *widget,
+                                        GdkEventButton  *event,
+                                        gpointer         user_data)
+{
+  Breaks_Clicked();
+  return FALSE;
+}
+
+
+void
+on_BreaksSpin_value_changed            (GtkSpinButton   *spinbutton,
+                                        gpointer         user_data)
+{
+  int pv;
+
+  pv = gtk_spin_button_get_value_as_int(spinbutton);
+  pass_value_changed(pv);
 }
 

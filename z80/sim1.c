@@ -30,9 +30,7 @@
 #include "sim.h"
 #include "simglb.h"
 
-#ifdef WANT_GUI
 int check_gui_break(void);
-#endif
 
 #ifdef FRONTPANEL
 #include "../../frontpanel/frontpanel.h"
@@ -433,15 +431,7 @@ void cpu(void)
 			case INT_NMI:	/* non maskable interrupt */
 				int_type = INT_NONE;
 				IFF <<= 1;
-#ifdef WANT_SPC
-				if (STACK <= ram)
-					STACK =	ram + 65536L;
-#endif
 				*--STACK = (PC - ram) >> 8;
-#ifdef WANT_SPC
-				if (STACK <= ram)
-					STACK =	ram + 65536L;
-#endif
 				*--STACK = (PC - ram);
 				PC = ram + 0x66;
 				break;
@@ -454,15 +444,7 @@ void cpu(void)
 					break;
 				case 1:
 					int_type = INT_NONE;
-#ifdef WANT_SPC
-					if (STACK <= ram)
-						STACK =	ram + 65536L;
-#endif
 					*--STACK = (PC - ram) >> 8;
-#ifdef WANT_SPC
-					if (STACK <= ram)
-						STACK =	ram + 65536L;
-#endif
 					*--STACK = (PC - ram);
 					PC = ram + 0x38;
 					break;
@@ -1393,10 +1375,6 @@ static int op_inchl(void)		/* INC HL */
 static int op_incsp(void)		/* INC SP */
 {
 	STACK++;
-#ifdef WANT_SPC
-	if (STACK > ram	+ 65535)
-		STACK =	ram;
-#endif
 	return(6);
 }
 
@@ -1427,10 +1405,6 @@ static int op_dechl(void)		/* DEC HL */
 static int op_decsp(void)		/* DEC SP */
 {
 	STACK--;
-#ifdef WANT_SPC
-	if (STACK < ram)
-		STACK =	ram + 65535;
-#endif
 	return(6);
 }
 
@@ -2840,60 +2814,28 @@ static int op_exsphl(void)		/* EX (SP),HL */
 
 static int op_pushaf(void)		/* PUSH AF */
 {
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = A;
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = F;
 	return(11);
 }
 
 static int op_pushbc(void)		/* PUSH BC */
 {
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = B;
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = C;
 	return(11);
 }
 
 static int op_pushde(void)		/* PUSH DE */
 {
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = D;
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = E;
 	return(11);
 }
 
 static int op_pushhl(void)		/* PUSH HL */
 {
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = H;
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = L;
 	return(11);
 }
@@ -2901,60 +2843,28 @@ static int op_pushhl(void)		/* PUSH HL */
 static int op_popaf(void)		/* POP AF */
 {
 	F = *STACK++;
-#ifdef WANT_SPC
-	if (STACK >= ram + 65536L)
-		STACK =	ram;
-#endif
 	A = *STACK++;
-#ifdef WANT_SPC
-	if (STACK >= ram + 65536L)
-		STACK =	ram;
-#endif
 	return(10);
 }
 
 static int op_popbc(void)		/* POP BC */
 {
 	C = *STACK++;
-#ifdef WANT_SPC
-	if (STACK >= ram + 65536L)
-		STACK =	ram;
-#endif
 	B = *STACK++;
-#ifdef WANT_SPC
-	if (STACK >= ram + 65536L)
-		STACK =	ram;
-#endif
 	return(10);
 }
 
 static int op_popde(void)		/* POP DE */
 {
 	E = *STACK++;
-#ifdef WANT_SPC
-	if (STACK >= ram + 65536L)
-		STACK =	ram;
-#endif
 	D = *STACK++;
-#ifdef WANT_SPC
-	if (STACK >= ram + 65536L)
-		STACK =	ram;
-#endif
 	return(10);
 }
 
 static int op_pophl(void)		/* POP HL */
 {
 	L = *STACK++;
-#ifdef WANT_SPC
-	if (STACK >= ram + 65536L)
-		STACK =	ram;
-#endif
 	H = *STACK++;
-#ifdef WANT_SPC
-	if (STACK >= ram + 65536L)
-		STACK =	ram;
-#endif
 	return(10);
 }
 
@@ -3026,15 +2936,7 @@ static int op_call(void)		/* CALL */
 
 	i = *PC++;
 	i += *PC++ << 8;
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = (PC - ram) >> 8;
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = (PC - ram);
 	PC = ram + i;
 	return(17);
@@ -3045,15 +2947,7 @@ static int op_ret(void)			/* RET */
 	register unsigned i;
 
 	i = *STACK++;
-#ifdef WANT_SPC
-	if (STACK >= ram + 65536L)
-		STACK =	ram;
-#endif
 	i += *STACK++ << 8;
-#ifdef WANT_SPC
-	if (STACK >= ram + 65536L)
-		STACK =	ram;
-#endif
 	PC = ram + i;
 	return(10);
 }
@@ -3233,15 +3127,7 @@ static int op_calz(void)		/* CALL Z,nn */
 	if (F &	Z_FLAG)	{
 		i = *PC++;
 		i += *PC++ << 8;
-#ifdef WANT_SPC
-		if (STACK <= ram)
-			STACK =	ram + 65536L;
-#endif
 		*--STACK = (PC - ram) >> 8;
-#ifdef WANT_SPC
-		if (STACK <= ram)
-			STACK =	ram + 65536L;
-#endif
 		*--STACK = (PC - ram);
 		PC = ram + i;
 		return(17);
@@ -3258,15 +3144,7 @@ static int op_calnz(void)		/* CALL NZ,nn */
 	if (!(F	& Z_FLAG)) {
 		i = *PC++;
 		i += *PC++ << 8;
-#ifdef WANT_SPC
-		if (STACK <= ram)
-			STACK =	ram + 65536L;
-#endif
 		*--STACK = (PC - ram) >> 8;
-#ifdef WANT_SPC
-		if (STACK <= ram)
-			STACK =	ram + 65536L;
-#endif
 		*--STACK = (PC - ram);
 		PC = ram + i;
 		return(17);
@@ -3283,15 +3161,7 @@ static int op_calc(void)		/* CALL C,nn */
 	if (F &	C_FLAG)	{
 		i = *PC++;
 		i += *PC++ << 8;
-#ifdef WANT_SPC
-		if (STACK <= ram)
-			STACK =	ram + 65536L;
-#endif
 		*--STACK = (PC - ram) >> 8;
-#ifdef WANT_SPC
-		if (STACK <= ram)
-			STACK =	ram + 65536L;
-#endif
 		*--STACK = (PC - ram);
 		PC = ram + i;
 		return(17);
@@ -3308,15 +3178,7 @@ static int op_calnc(void)		/* CALL NC,nn */
 	if (!(F	& C_FLAG)) {
 		i = *PC++;
 		i += *PC++ << 8;
-#ifdef WANT_SPC
-		if (STACK <= ram)
-			STACK =	ram + 65536L;
-#endif
 		*--STACK = (PC - ram) >> 8;
-#ifdef WANT_SPC
-		if (STACK <= ram)
-			STACK =	ram + 65536L;
-#endif
 		*--STACK = (PC - ram);
 		PC = ram + i;
 		return(17);
@@ -3333,15 +3195,7 @@ static int op_calpe(void)		/* CALL PE,nn */
 	if (F &	P_FLAG)	{
 		i = *PC++;
 		i += *PC++ << 8;
-#ifdef WANT_SPC
-		if (STACK <= ram)
-			STACK =	ram + 65536L;
-#endif
 		*--STACK = (PC - ram) >> 8;
-#ifdef WANT_SPC
-		if (STACK <= ram)
-			STACK =	ram + 65536L;
-#endif
 		*--STACK = (PC - ram);
 		PC = ram + i;
 		return(17);
@@ -3358,15 +3212,7 @@ static int op_calpo(void)		/* CALL PO,nn */
 	if (!(F	& P_FLAG)) {
 		i = *PC++;
 		i += *PC++ << 8;
-#ifdef WANT_SPC
-		if (STACK <= ram)
-			STACK =	ram + 65536L;
-#endif
 		*--STACK = (PC - ram) >> 8;
-#ifdef WANT_SPC
-		if (STACK <= ram)
-			STACK =	ram + 65536L;
-#endif
 		*--STACK = (PC - ram);
 		PC = ram + i;
 		return(17);
@@ -3383,15 +3229,7 @@ static int op_calm(void)		/* CALL M,nn */
 	if (F &	S_FLAG)	{
 		i = *PC++;
 		i += *PC++ << 8;
-#ifdef WANT_SPC
-		if (STACK <= ram)
-			STACK =	ram + 65536L;
-#endif
 		*--STACK = (PC - ram) >> 8;
-#ifdef WANT_SPC
-		if (STACK <= ram)
-			STACK =	ram + 65536L;
-#endif
 		*--STACK = (PC - ram);
 		PC = ram + i;
 		return(17);
@@ -3408,15 +3246,7 @@ static int op_calp(void)		/* CALL P,nn */
 	if (!(F	& S_FLAG)) {
 		i = *PC++;
 		i += *PC++ << 8;
-#ifdef WANT_SPC
-		if (STACK <= ram)
-			STACK =	ram + 65536L;
-#endif
 		*--STACK = (PC - ram) >> 8;
-#ifdef WANT_SPC
-		if (STACK <= ram)
-			STACK =	ram + 65536L;
-#endif
 		*--STACK = (PC - ram);
 		PC = ram + i;
 		return(17);
@@ -3432,15 +3262,7 @@ static int op_retz(void)		/* RET Z */
 
 	if (F &	Z_FLAG)	{
 		i = *STACK++;
-#ifdef WANT_SPC
-		if (STACK >= ram + 65536L)
-			STACK =	ram;
-#endif
 		i += *STACK++ << 8;
-#ifdef WANT_SPC
-		if (STACK >= ram + 65536L)
-			STACK =	ram;
-#endif
 		PC = ram + i;
 		return(11);
 	} else {
@@ -3454,15 +3276,7 @@ static int op_retnz(void)		/* RET NZ */
 
 	if (!(F	& Z_FLAG)) {
 		i = *STACK++;
-#ifdef WANT_SPC
-		if (STACK >= ram + 65536L)
-			STACK =	ram;
-#endif
 		i += *STACK++ << 8;
-#ifdef WANT_SPC
-		if (STACK >= ram + 65536L)
-			STACK =	ram;
-#endif
 		PC = ram + i;
 		return(11);
 	} else {
@@ -3476,15 +3290,7 @@ static int op_retc(void)		/* RET C */
 
 	if (F &	C_FLAG)	{
 		i = *STACK++;
-#ifdef WANT_SPC
-		if (STACK >= ram + 65536L)
-			STACK =	ram;
-#endif
 		i += *STACK++ << 8;
-#ifdef WANT_SPC
-		if (STACK >= ram + 65536L)
-			STACK =	ram;
-#endif
 		PC = ram + i;
 		return(11);
 	} else {
@@ -3498,15 +3304,7 @@ static int op_retnc(void)		/* RET NC */
 
 	if (!(F	& C_FLAG)) {
 		i = *STACK++;
-#ifdef WANT_SPC
-		if (STACK >= ram + 65536L)
-			STACK =	ram;
-#endif
 		i += *STACK++ << 8;
-#ifdef WANT_SPC
-		if (STACK >= ram + 65536L)
-			STACK =	ram;
-#endif
 		PC = ram + i;
 		return(11);
 	} else {
@@ -3520,15 +3318,7 @@ static int op_retpe(void)		/* RET PE */
 
 	if (F &	P_FLAG)	{
 		i = *STACK++;
-#ifdef WANT_SPC
-		if (STACK >= ram + 65536L)
-			STACK =	ram;
-#endif
 		i += *STACK++ << 8;
-#ifdef WANT_SPC
-		if (STACK >= ram + 65536L)
-			STACK =	ram;
-#endif
 		PC = ram + i;
 		return(11);
 	} else {
@@ -3542,15 +3332,7 @@ static int op_retpo(void)		/* RET PO */
 
 	if (!(F	& P_FLAG)) {
 		i = *STACK++;
-#ifdef WANT_SPC
-		if (STACK >= ram + 65536L)
-			STACK =	ram;
-#endif
 		i += *STACK++ << 8;
-#ifdef WANT_SPC
-		if (STACK >= ram + 65536L)
-			STACK =	ram;
-#endif
 		PC = ram + i;
 		return(11);
 	} else {
@@ -3564,15 +3346,7 @@ static int op_retm(void)		/* RET M */
 
 	if (F &	S_FLAG)	{
 		i = *STACK++;
-#ifdef WANT_SPC
-		if (STACK >= ram + 65536L)
-			STACK =	ram;
-#endif
 		i += *STACK++ << 8;
-#ifdef WANT_SPC
-		if (STACK >= ram + 65536L)
-			STACK =	ram;
-#endif
 		PC = ram + i;
 		return(11);
 	} else {
@@ -3586,15 +3360,7 @@ static int op_retp(void)		/* RET P */
 
 	if (!(F	& S_FLAG)) {
 		i = *STACK++;
-#ifdef WANT_SPC
-		if (STACK >= ram + 65536L)
-			STACK =	ram;
-#endif
 		i += *STACK++ << 8;
-#ifdef WANT_SPC
-		if (STACK >= ram + 65536L)
-			STACK =	ram;
-#endif
 		PC = ram + i;
 		return(11);
 	} else {
@@ -3648,15 +3414,7 @@ static int op_jrnc(void)		/* JR NC,n */
 
 static int op_rst00(void)		/* RST 00 */
 {
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = (PC - ram) >> 8;
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = (PC - ram);
 	PC = ram;
 	return(11);
@@ -3664,15 +3422,7 @@ static int op_rst00(void)		/* RST 00 */
 
 static int op_rst08(void)		/* RST 08 */
 {
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = (PC - ram) >> 8;
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = (PC - ram);
 	PC = ram + 0x08;
 	return(11);
@@ -3680,15 +3430,7 @@ static int op_rst08(void)		/* RST 08 */
 
 static int op_rst10(void)		/* RST 10 */
 {
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = (PC - ram) >> 8;
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = (PC - ram);
 	PC = ram + 0x10;
 	return(11);
@@ -3696,15 +3438,7 @@ static int op_rst10(void)		/* RST 10 */
 
 static int op_rst18(void)		/* RST 18 */
 {
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = (PC - ram) >> 8;
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = (PC - ram);
 	PC = ram + 0x18;
 	return(11);
@@ -3712,15 +3446,7 @@ static int op_rst18(void)		/* RST 18 */
 
 static int op_rst20(void)		/* RST 20 */
 {
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = (PC - ram) >> 8;
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = (PC - ram);
 	PC = ram + 0x20;
 	return(11);
@@ -3728,15 +3454,7 @@ static int op_rst20(void)		/* RST 20 */
 
 static int op_rst28(void)		/* RST 28 */
 {
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = (PC - ram) >> 8;
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = (PC - ram);
 	PC = ram + 0x28;
 	return(11);
@@ -3744,15 +3462,7 @@ static int op_rst28(void)		/* RST 28 */
 
 static int op_rst30(void)		/* RST 30 */
 {
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = (PC - ram) >> 8;
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = (PC - ram);
 	PC = ram + 0x30;
 	return(11);
@@ -3760,15 +3470,7 @@ static int op_rst30(void)		/* RST 30 */
 
 static int op_rst38(void)		/* RST 38 */
 {
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = (PC - ram) >> 8;
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = (PC - ram);
 	PC = ram + 0x38;
 	return(11);

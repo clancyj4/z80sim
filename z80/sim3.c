@@ -355,30 +355,14 @@ static int trap_dd(void)
 
 static int op_popix(void)		/* POP IX */
 {
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	IX = *STACK++;
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	IX += *STACK++ << 8;
 	return(14);
 }
 
 static int op_pusix(void)		/* PUSH IX */
 {
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = IX >> 8;
-#ifdef WANT_SPC
-	if (STACK <= ram)
-		STACK =	ram + 65536L;
-#endif
 	*--STACK = IX;
 	return(15);
 }

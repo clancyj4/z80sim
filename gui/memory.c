@@ -171,8 +171,7 @@ gchar *teststr;
     return row;
 
 /* DEBUG */
-  printf("highlight_memory: begin=%04X, addr=%04X, row=%d\n",
-	begin, addr, row);
+//  printf("highlight_memory: begin=%04X, addr=%04X, row=%d\n", begin, addr, row);
 
   /* Highlight the hex code */
 
