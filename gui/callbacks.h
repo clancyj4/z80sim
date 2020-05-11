@@ -318,10 +318,10 @@ on_Log_destroy_event                   (GtkWidget       *widget,
                                         GdkEvent        *event,
                                         gpointer         user_data);
 
-gboolean
-on_Log_delete_event                    (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
+//gboolean
+//on_Log_delete_event                    (GtkWidget       *widget,
+//                                        GdkEvent        *event,
+//                                        gpointer         user_data);
 
 void
 on_In_Port_Submit_clicked              (GtkButton       *button,

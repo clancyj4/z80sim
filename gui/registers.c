@@ -148,7 +148,6 @@ void Update_Registers(void)
   Mem_REG = exatoi((char *)gtk_entry_get_text(GTK_ENTRY(mem_entry)));
 
   Show_Registers();
-printf("Update_Registers\n");
   Show_Code(PC, FALSE);
 }
 

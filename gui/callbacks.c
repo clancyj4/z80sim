@@ -365,7 +365,6 @@ void
 on_Break_Button_clicked                (GtkButton       *button,
                                         gpointer         user_data)
 {
-printf("on_Break_Button_clicked called\n");
   Code_Break();
 }
 
@@ -477,9 +476,14 @@ void
 on_ioport1_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-fprintf(stderr, "on_ioport1_activate called with current_port=%d\n", current_port);
-  Show_IOport(GTK_WIDGET(menuitem));
-  Dump_IOPort(current_port);
+  printf("on_ioport1_activate called with current_port=%d\n", current_port);
+  if (gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(menuitem)))
+  {
+    show_iowin(TRUE);
+    Dump_IOPort(current_port);
+  }
+  else
+    show_iowin(FALSE);
 }
 
 
@@ -524,6 +528,7 @@ void
 on_PortSpin_value_changed              (GtkSpinButton   *spinbutton,
                                         gpointer         user_data)
 {
+  printf("on_PortSpin_value_changed called.\n");
   current_port = (int)gtk_spin_button_get_value(spinbutton);
   printf("current port changed to %d which is ", current_port);
   if (IOPort[current_port] == NULL)
@@ -634,17 +639,6 @@ on_SlowRunSpin_value_changed           (GtkSpinButton   *spinbutton,
 }
 
 
-gboolean
-on_Log_delete_event                    (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data)
-{
-  printf("Log destroyed\n");
-  show_log(FALSE);
-  return FALSE;
-}
-
-
 void
 on_In_Port_Submit_clicked              (GtkButton       *button,
                                         gpointer         user_data)
@@ -662,7 +656,7 @@ on_Code_scroll_to_PC_clicked           (GtkButton       *button,
 
 
 void
-on_IOWIN_destroy                       (GtkWidget       *object,
+on_IOWIN_delete_event                  (GtkWidget       *object,
                                         gpointer         user_data)
 {
   fprintf(stderr, "IOWIN destroy called.\n");
@@ -696,7 +690,25 @@ on_BreaksSpin_value_changed            (GtkSpinButton   *spinbutton,
 {
   int pv;
 
+  printf("on_BreaksSpin_value_changed called.\n");
   pv = gtk_spin_button_get_value_as_int(spinbutton);
   pass_value_changed(pv);
+}
+
+
+void
+on_Breakpoints_delete_event            (GtkWidget       *object,
+                                        gpointer         user_data)
+{
+  printf("Breakpoints delete event called.\n");
+  show_breaks(FALSE);
+}
+
+
+void
+on_Log_delete_event            (GtkWidget       *object,
+                                        gpointer         user_data)
+{
+  show_log(FALSE);
 }
 

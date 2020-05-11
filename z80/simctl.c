@@ -121,6 +121,7 @@ static int handel_break(void)
 	cpu();
 	*(ram +	soft[i].sb_adr)	= 0x76;	/* restore HALT	opcode again */
 	soft[i].sb_passcount++;		/* increment passcounter */
+        show_breaks_content();
 	if (soft[i].sb_passcount != soft[i].sb_pass)
 		return(1);		/* pass	not reached, continue */
 	sprintf(lstr, "Software breakpoint %d reached at %04X\n", i, soft[i].sb_adr);

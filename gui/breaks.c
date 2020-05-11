@@ -43,7 +43,7 @@ void show_breaks_content()
   {
     if (soft[i].sb_pass > 0)
     {
-      sprintf(str, "breakpoint %02d: address %04X count %03d\n", i, soft[i].sb_adr, soft[i].sb_pass);
+      sprintf(str, "breakpoint %02d: address %04X count %03d counted so far %03d\n", i, soft[i].sb_adr, soft[i].sb_pass, soft[i].sb_passcount);
       strcat(whole_buffer, str);
     }
   }
@@ -138,7 +138,8 @@ void on_Break_Clear_clicked()
   }
 
   printf("breakpoint selected to clear is %d\n", selected_bp);
-  soft[selected_bp].sb_pass = 0;
+  soft[selected_bp].sb_pass = 0;                  /* disable the breakpoint */
+  *PC = soft[selected_bp].sb_oldopc;                        /* original opcode */
 
   show_breaks_content();
   Show_Code(PC, TRUE);
@@ -153,6 +154,7 @@ void pass_value_changed(int pv)
     return;
   }
 
+  printf("breakpoint %d pass set to %d\n", selected_bp, pv);
   soft[selected_bp].sb_pass = pv;
 
   show_breaks_content();

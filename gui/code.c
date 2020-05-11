@@ -445,12 +445,19 @@ void Code_Break(void)
 {
   int i, line;
 
-printf("Code_Break\n");
   if (!Code_Selected)
   {
     show_error("Unable to set break point - no code selected.\n");
     return;
   }
+
+  for (i = 0; i < SBSIZE; i++)			/* check BPs */
+    if (soft[i].sb_adr == Selected_Code_Addr)   /* is address already breakpointed? */
+    {
+      sprintf(tstr, "Already a breakpoint at %04X\n", Selected_Code_Addr);
+      show_error(tstr);
+      return;
+    }
 
   for (i = 0; i < SBSIZE; i++)			/* check BPs */
     if (soft[i].sb_pass == 0)			/* available? */
@@ -504,7 +511,10 @@ void Code_UnBreak(void)
   bpc = -1;					/* no bp */
   for (i = 0; i < SBSIZE; i++)
     if (soft[i].sb_adr == Selected_Code_Addr)	/* search for BP adr */
+    {
       bpc = i;
+      break;                                    /* first match only */
+    }
 
   if (bpc != -1)				/* found it ? */
   {

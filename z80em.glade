@@ -39,6 +39,11 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
+  <object class="GtkAdjustment" id="adjustment3">
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkTextBuffer" id="textbuffer1">
     <property name="text" translatable="yes">‫‬*  &gt;  0000: XX XX XX XX	LD		BC,0230H</property>
   </object>
@@ -221,15 +226,6 @@
                         <property name="tooltip_text" translatable="yes">Show the IO port window.</property>
                         <property name="label">IOPorts</property>
                         <signal name="toggled" handler="on_ioport1_activate" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkCheckMenuItem">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Fill areas of memory.</property>
-                        <property name="label" translatable="yes">Memory Fill</property>
-                        <signal name="toggled" handler="on_memfill_activated" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -592,6 +588,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <property name="tooltip_text" translatable="yes">Add a breakpoint at the selected code line</property>
                                 <signal name="clicked" handler="on_Break_Button_clicked" swapped="no"/>
                               </object>
                               <packing>
@@ -823,6 +820,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <property name="tooltip_text" translatable="yes">Zero all the registers</property>
                                 <signal name="clicked" handler="on_Zero_Button_clicked" swapped="no"/>
                               </object>
                               <packing>
@@ -836,6 +834,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <property name="tooltip_text" translatable="yes">Clear the selected break address</property>
                                 <signal name="clicked" handler="on_Clear_Break_Button_clicked" swapped="no"/>
                               </object>
                               <packing>
@@ -849,6 +848,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <property name="tooltip_text" translatable="yes">Synch the memory register to the selection in the memory display</property>
                                 <signal name="clicked" handler="on_Synch_Memory_Button_clicked" swapped="no"/>
                               </object>
                               <packing>
@@ -862,6 +862,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <property name="tooltip_text" translatable="yes">Set the PC to the selected code address</property>
                                 <signal name="clicked" handler="on_PC_Set_Button_clicked" swapped="no"/>
                               </object>
                               <packing>
@@ -875,6 +876,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
+                                <property name="tooltip_text" translatable="yes">Toggle the slow run feature</property>
                                 <property name="draw_indicator">True</property>
                                 <signal name="toggled" handler="on_SlowRunButton_toggled" swapped="no"/>
                               </object>
@@ -887,6 +889,7 @@
                               <object class="GtkSpinButton" id="SlowRunSpin">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
+                                <property name="tooltip_text" translatable="yes">Set the delay between opcode execution</property>
                                 <property name="adjustment">adjustment1</property>
                                 <property name="climb_rate">10</property>
                                 <property name="numeric">True</property>
@@ -962,6 +965,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <property name="tooltip_text" translatable="yes">Update registers from internal representations (obsolete?)</property>
                         <signal name="clicked" handler="on_Update_REG_button_clicked" swapped="no"/>
                       </object>
                       <packing>
@@ -1257,6 +1261,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="has_focus">True</property>
+                                <property name="tooltip_text" translatable="yes">Memory dump from where the selected register is pointing</property>
                                 <property name="border_width">1</property>
                                 <property name="pixels_inside_wrap">5</property>
                                 <property name="cursor_visible">False</property>
@@ -1301,6 +1306,7 @@
                           <object class="GtkImage" id="image1">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="tooltip_text" translatable="yes">Step back 1 memory location</property>
                             <property name="stock">gtk-go-back</property>
                           </object>
                         </child>
@@ -1322,6 +1328,7 @@
                           <object class="GtkImage" id="image2">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="tooltip_text" translatable="yes">Step forward 1 memory location</property>
                             <property name="stock">gtk-go-forward</property>
                           </object>
                         </child>
@@ -1343,6 +1350,7 @@
                           <object class="GtkImage" id="image3">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="tooltip_text" translatable="yes">Step up 1 memory line</property>
                             <property name="stock">gtk-go-up</property>
                           </object>
                         </child>
@@ -1364,6 +1372,7 @@
                           <object class="GtkImage" id="image4">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="tooltip_text" translatable="yes">Step down 1 memory line</property>
                             <property name="stock">gtk-go-down</property>
                           </object>
                         </child>
@@ -1385,6 +1394,7 @@
                           <object class="GtkImage" id="image5">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="tooltip_text" translatable="yes">Step back 1 memory page</property>
                             <property name="stock">gtk-media-previous</property>
                           </object>
                         </child>
@@ -1406,6 +1416,7 @@
                           <object class="GtkImage" id="image6">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
+                            <property name="tooltip_text" translatable="yes">Step forward 1 memory page</property>
                             <property name="stock">gtk-media-forward</property>
                           </object>
                         </child>
@@ -1444,6 +1455,7 @@
                       <object class="GtkEntry" id="Mem_Addr_Entry">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="tooltip_text" translatable="yes">Selected memory address</property>
                         <property name="max_length">4</property>
                         <property name="width_chars">6</property>
                         <property name="caps_lock_warning">False</property>
@@ -1475,6 +1487,7 @@
                       <object class="GtkEntry" id="Mem_Content_Entry">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="tooltip_text" translatable="yes">Content of selected memory address</property>
                         <property name="max_length">2</property>
                         <property name="width_chars">4</property>
                         <property name="shadow_type">etched-out</property>
@@ -1494,6 +1507,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <property name="tooltip_text" translatable="yes">Update the selected memory address with the content</property>
                         <property name="relief">half</property>
                         <property name="use_stock">True</property>
                         <signal name="clicked" handler="on_Mem_Update_Button_clicked" swapped="no"/>
@@ -1539,7 +1553,7 @@
                           <object class="GtkTextView" id="Code_Text">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="tooltip_text" translatable="yes">Adds a breakpoint to the selected code line.</property>
+                            <property name="tooltip_text" translatable="yes">Code listing.  Clicking on a line selects that code</property>
                             <property name="border_width">1</property>
                             <property name="editable">False</property>
                             <property name="cursor_visible">False</property>
@@ -1581,10 +1595,10 @@
     <property name="can_focus">False</property>
     <property name="type_hint">dialog</property>
     <property name="transient_for">Main</property>
-    <property name="program_name">Glade</property>
+    <property name="program_name">z80sim</property>
     <property name="copyright" translatable="yes">Copyright (c) 2008-2020 Udo Munk and Justin Clancy</property>
     <property name="comments" translatable="yes">Z80 emulator by Udo Munk. GUI addons by Justin Clancy.</property>
-    <property name="logo_icon_name">image-missing</property>
+    <property name="logo_icon_name">applications-development</property>
     <property name="license_type">gpl-2-0</property>
     <child>
       <placeholder/>
@@ -1616,6 +1630,7 @@
     <property name="default_width">440</property>
     <property name="default_height">250</property>
     <property name="transient_for">Main</property>
+    <signal name="delete-event" handler="on_Breakpoints_delete_event" swapped="no"/>
     <child>
       <placeholder/>
     </child>
@@ -1651,6 +1666,7 @@
                   <object class="GtkTextView" id="Breakpoints_Text">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">List of active breakpoints</property>
                     <property name="editable">False</property>
                     <property name="cursor_visible">False</property>
                     <signal name="button-release-event" handler="on_Break_Text_button_release_event" swapped="no"/>
@@ -1673,6 +1689,7 @@
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">Change the number of passes needed for a break</property>
                 <property name="label" translatable="yes">&lt;b&gt;Adjust pass count&lt;/b&gt;</property>
                 <property name="use_markup">True</property>
               </object>
@@ -1687,10 +1704,11 @@
               <object class="GtkSpinButton" id="Breaks_Pass_Count">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="tooltip_text" translatable="yes">The current selection's pass count</property>
                 <property name="text" translatable="yes">1</property>
                 <property name="caps_lock_warning">False</property>
                 <property name="progress_fraction">1</property>
-                <property name="adjustment">adjustment2</property>
+                <property name="adjustment">adjustment3</property>
                 <property name="numeric">True</property>
                 <signal name="value-changed" handler="on_BreaksSpin_value_changed" swapped="no"/>
               </object>
@@ -1713,6 +1731,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Clear the selected breakpoint.</property>
             <signal name="clicked" handler="on_Break_Clear_clicked" swapped="no"/>
           </object>
           <packing>
@@ -1847,156 +1866,11 @@
       </object>
     </child>
   </object>
-  <object class="GtkWindow" id="Fill_Memory">
-    <property name="can_focus">False</property>
-    <property name="title" translatable="yes">Fill Memory</property>
-    <property name="transient_for">Main</property>
-    <child>
-      <placeholder/>
-    </child>
-    <child>
-      <object class="GtkBox" id="hbox4">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkBox">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">From</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="padding">6</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkEntry">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="width_chars">6</property>
-                <property name="text" translatable="yes">0000</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="padding">6</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">To</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="padding">6</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkEntry">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="width_chars">6</property>
-                <property name="text" translatable="yes">0000</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="padding">6</property>
-                <property name="position">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">With</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="padding">6</property>
-                <property name="position">4</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkEntry">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="width_chars">4</property>
-                <property name="text" translatable="yes">00</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="padding">6</property>
-                <property name="position">5</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkBox">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <child>
-              <object class="GtkButton" id="fill_mem_OK">
-                <property name="label" translatable="yes">OK</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="padding">6</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="fill_mem_Cancel">
-                <property name="label" translatable="yes">Cancel</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="padding">6</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-  </object>
   <object class="GtkWindow" id="IOWIN">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Z80 I/O Port</property>
     <property name="transient_for">Main</property>
+    <signal name="delete-event" handler="on_IOWIN_delete_event" swapped="no"/>
     <child>
       <placeholder/>
     </child>
@@ -2301,6 +2175,7 @@
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Z80 Emulator Log</property>
     <property name="transient_for">Main</property>
+    <signal name="delete-event" handler="on_Log_delete_event" swapped="no"/>
     <child>
       <placeholder/>
     </child>
