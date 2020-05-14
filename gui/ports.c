@@ -50,6 +50,9 @@ printf("Assigned struct for port %d\n", port);
   IOPort[port]->out_ptr = 0;				/* ..set ptr to start */
   IOPort[port]->ishex = 0;				/* default to ASCII */
   IOPort[port]->in_len = 0;				/* clear input buffer */
+
+  current_port = port;
+  Dump_IOPort(port);
 }
 
 
@@ -72,6 +75,19 @@ void Dump_IOPort(int port)
 
   if (IOPort[port] == NULL)			/* struct exists? */
     return;
+
+//  if (IOPort[port]->ishex)			          /* dump in hex? */
+//  {
+//    gtk_toggle_button_set_active(ioportascii, FALSE);   /*... toggle it off */
+//    printf("turning ioportascii OFF\n");
+//  }
+//  else
+//  {
+//    gtk_toggle_button_set_active(ioportascii, TRUE);   /*... toggle it on */
+//    printf("turning ioportascii ON\n");
+//  }
+
+  gtk_spin_button_set_value(GTK_SPIN_BUTTON(ioportspin), port);
 
   if (IOPort[port]->ishex)			/* dump in hex? */
   {

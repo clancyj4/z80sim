@@ -505,7 +505,6 @@ on_IOASCII_toggled                     (GtkToggleButton *togglebutton,
   if (IOPort[current_port] == NULL)	/* toggling a non-existent port? */
     Create_IOPort_Struct(current_port);	/* strange - but create it anyway */
 
-printf("ishex set to 0.\n");
   IOPort[current_port]->ishex = 0;
   Dump_IOPort(current_port);
 }
@@ -518,7 +517,6 @@ on_IOHex_toggled                       (GtkToggleButton *togglebutton,
   if (IOPort[current_port] == NULL)	/* toggling a non-existent port? */
     Create_IOPort_Struct(current_port);	/* strange - but create it anyway */
 
-printf("ishex set to 1.\n");
   IOPort[current_port]->ishex = 1;
   Dump_IOPort(current_port);
 }
@@ -530,12 +528,12 @@ on_PortSpin_value_changed              (GtkSpinButton   *spinbutton,
 {
   printf("on_PortSpin_value_changed called.\n");
   current_port = (int)gtk_spin_button_get_value(spinbutton);
-  printf("current port changed to %d which is ", current_port);
+  printf("current port changed to %d\n", current_port);
   if (IOPort[current_port] == NULL)
-    printf("UNassigned.\n");
+    Create_IOPort_Struct(current_port);
   else
   {
-    printf("assigned.\n");
+    printf("Already assigned.\n");
   }
   Dump_IOPort(current_port);
 }
@@ -659,7 +657,7 @@ void
 on_IOWIN_delete_event                  (GtkWidget       *object,
                                         gpointer         user_data)
 {
-  fprintf(stderr, "IOWIN destroy called.\n");
+  show_iowin(FALSE);
 }
 
 
