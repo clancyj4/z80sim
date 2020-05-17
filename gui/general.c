@@ -106,11 +106,18 @@ void Get_Project_File_Open(void)
 
 void load_z80_code(char *fn)
 {
+  int i;
+
   if (fn != NULL)
   {
     sprintf(lstr, "GETFILE: %s\n", fn);
     Add_to_Log(lstr);
     do_getfile(fn);
+    for (i = 0; i < SBSIZE; i++)                 /* clear old breakpoints because they aren't relevant any more */
+    {
+      soft[i].sb_adr = 0;
+      soft[i].sb_pass = 0;
+    }
     Show_Code(PC, TRUE);
     Do_Code_Reload();
     Show_Registers();

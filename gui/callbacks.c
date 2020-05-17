@@ -710,3 +710,9 @@ on_Log_delete_event            (GtkWidget       *object,
   show_log(FALSE);
 }
 
+void
+on_Break_Clear_clicked          (GtkButton       *button,
+                                        gpointer         user_data)
+{
+  Break_Clear_Break();
+}

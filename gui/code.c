@@ -434,7 +434,6 @@ void Show_Code(BYTE *disas_addr, gboolean force)
 			mark, 0.0, FALSE, 0.0, 0.0);
   }
 
-// printf("p1: dch\n");
   do_code_highlights();
 }
 
@@ -518,10 +517,7 @@ void Code_UnBreak(void)
 
   if (bpc != -1)				/* found it ? */
   {
-    *(ram + Selected_Code_Addr) =
-	 soft[bpc].sb_oldopc;			/* restore opcode */
-    soft[bpc].sb_adr = (WORD)0;			/* clear BP entry */
-    soft[bpc].sb_pass = 0;
+    clear_breakpoint(bpc);
     Code_Selected = FALSE;			/* clear selection */
     sprintf(lstr, "Breakpoint %d cleared from 0x%04X\n",
 		bpc, Selected_Code_Addr);
