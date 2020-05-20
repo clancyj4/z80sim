@@ -86,6 +86,9 @@ extern GtkWidget *   about_win;
 extern GtkWidget *   FCwin;
 extern GtkWidget *   FSwin;
 extern GtkWidget *   FPwin;
+extern GtkWidget *   logmenuitem;
+extern GtkWidget *   iomenuitem;
+extern GtkWidget *   breaksmenuitem;
 
 extern char *project_fn;
 extern GtkTextBuffer *mem_textbuffer;

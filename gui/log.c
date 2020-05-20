@@ -42,6 +42,8 @@ void show_log(gboolean onoff)
     gtk_widget_show(Log);
   else
     gtk_widget_hide(Log);
+
+  gtk_check_menu_item_set_active(logmenuitem, onoff);
 }
 
 void init_Log(GtkWidget *Main)

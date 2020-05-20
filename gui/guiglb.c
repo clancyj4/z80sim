@@ -49,6 +49,9 @@ GtkWidget *   about_win;
 GtkWidget *   FCwin;
 GtkWidget *   FSwin;
 GtkWidget *   FPwin;
+GtkWidget *   logmenuitem;
+GtkWidget *   iomenuitem;
+GtkWidget *   breaksmenuitem;
 
 char *project_fn;
 GtkTextBuffer *mem_textbuffer;

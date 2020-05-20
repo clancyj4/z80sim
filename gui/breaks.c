@@ -29,6 +29,8 @@ void show_breaks(gboolean onoff)
   }
   else
     gtk_widget_hide(Breaks);
+
+  gtk_check_menu_item_set_active(breaksmenuitem, onoff);
 }
 
 
@@ -36,7 +38,7 @@ void show_breaks_content()
 {
   int i;
   char str[64];
-  char whole_buffer[SBSIZE * 14];
+  char whole_buffer[SBSIZE * 70];
 
   whole_buffer[0] = (char)0;
   for (i = 0; i < SBSIZE; i++)

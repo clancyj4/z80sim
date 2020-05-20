@@ -450,9 +450,9 @@ on_Reset_Button_clicked                (GtkButton       *button,
                                         gpointer         user_data)
 {
   PC = ram;
+  Zero_Registers();
   Show_Code(PC, TRUE);
   Show_Registers();
-
 }
 
 
@@ -526,15 +526,13 @@ void
 on_PortSpin_value_changed              (GtkSpinButton   *spinbutton,
                                         gpointer         user_data)
 {
-  printf("on_PortSpin_value_changed called.\n");
   current_port = (int)gtk_spin_button_get_value(spinbutton);
   printf("current port changed to %d\n", current_port);
   if (IOPort[current_port] == NULL)
     Create_IOPort_Struct(current_port);
   else
-  {
     printf("Already assigned.\n");
-  }
+
   Dump_IOPort(current_port);
 }
 
@@ -688,7 +686,6 @@ on_BreaksSpin_value_changed            (GtkSpinButton   *spinbutton,
 {
   int pv;
 
-  printf("on_BreaksSpin_value_changed called.\n");
   pv = gtk_spin_button_get_value_as_int(spinbutton);
   pass_value_changed(pv);
 }
@@ -698,7 +695,6 @@ void
 on_Breakpoints_delete_event            (GtkWidget       *object,
                                         gpointer         user_data)
 {
-  printf("Breakpoints delete event called.\n");
   show_breaks(FALSE);
 }
 

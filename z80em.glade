@@ -211,7 +211,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkCheckMenuItem">
+                      <object class="GtkCheckMenuItem" id="LogMenuItem">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Show the log window.</property>
@@ -220,7 +220,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkCheckMenuItem">
+                      <object class="GtkCheckMenuItem" id="IOMenuItem">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Show the IO port window.</property>
@@ -229,7 +229,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkCheckMenuItem">
+                      <object class="GtkCheckMenuItem" id="BreaksMenuItem">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Show a dialogue with all current breakpoints.</property>
@@ -296,7 +296,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="tooltip_text" translatable="yes">Do a trace run.</property>
-                <property name="stock_id">gtk-sort-descending</property>
+                <property name="stock_id">gtk-go-down</property>
                 <signal name="clicked" handler="on_Trace_tool_clicked" swapped="no"/>
               </object>
               <packing>
@@ -309,7 +309,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="tooltip_text" translatable="yes">Single step.</property>
-                <property name="stock_id">gtk-jump-to</property>
+                <property name="stock_id">gtk-strikethrough</property>
                 <signal name="clicked" handler="on_Step_tool_clicked" swapped="no"/>
               </object>
               <packing>
@@ -803,10 +803,11 @@
                             </child>
                             <child>
                               <object class="GtkButton" id="Reset_Button">
-                                <property name="label" translatable="yes">Restart</property>
+                                <property name="label" translatable="yes">Reset</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <property name="tooltip_text" translatable="yes">Reset the program.</property>
                                 <signal name="clicked" handler="on_Reset_Button_clicked" swapped="no"/>
                               </object>
                               <packing>
@@ -1242,7 +1243,6 @@
                     <property name="height_request">245</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="margin_bottom">115</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>

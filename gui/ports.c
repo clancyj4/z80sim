@@ -129,12 +129,14 @@ void Dump_IOPort(int port)
 
 /* Show/hide the IO Port window */
 
-void show_iowin(gboolean porton)
+void show_iowin(gboolean onoff)
 {
-  if (porton)
+  if (onoff)
     gtk_widget_show(ioport_win);
   else
     gtk_widget_hide(ioport_win);
+
+  gtk_check_menu_item_set_active(iomenuitem, onoff);
 }
 
 

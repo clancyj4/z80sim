@@ -272,6 +272,7 @@ void Read_Project(char *fn)
     fread(&soft[i], sizeof(soft[0]), 1, fp);
 
 
+  build_code_cache();
   Show_Code(PC, TRUE);
   Show_All();
 

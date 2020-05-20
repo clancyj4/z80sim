@@ -71,6 +71,9 @@ int main(int argc, char *argv[])
   Breaks = GTK_WIDGET(gtk_builder_get_object(builder, "Breakpoints"));
   breakstext = GTK_WIDGET(gtk_builder_get_object(builder, "Breakpoints_Text"));
   breakspassspin = GTK_WIDGET(gtk_builder_get_object(builder, "Breaks_Pass_Count"));
+  logmenuitem = GTK_WIDGET(gtk_builder_get_object(builder, "LogMenuItem"));
+  iomenuitem = GTK_WIDGET(gtk_builder_get_object(builder, "IOMenuItem"));
+  breaksmenuitem = GTK_WIDGET(gtk_builder_get_object(builder, "BreaksMenuItem"));
 
   project_fn = malloc(1024);
   strcpy(project_fn, "untitled.z80sim");

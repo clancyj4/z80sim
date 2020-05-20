@@ -25,11 +25,11 @@ extern WORD Mem_REG;
 
 void dump_memory_vars(void)
 {
-//  logprint("++++ MEMORY ++++\n", NULL);
-//  logprint("Memory_Selected=%d\n", Memory_Selected);
-//  logprint("Selected_Memory_Addr=%04X Selected_Memory_Content=%02X\n",
-//	Selected_Memory_Addr, Selected_Memory_Content);
-//  logprint("---- MEMORY ----\n", NULL);
+  printf("++++ MEMORY ++++\n");
+  printf("Memory_Selected=%d\n", Memory_Selected);
+  printf("Selected_Memory_Addr=%04X Selected_Memory_Content=%02X\n",
+	Selected_Memory_Addr, Selected_Memory_Content);
+  printf("---- MEMORY ----\n", NULL);
 }
 
 void Scroll_Memory(int row)
