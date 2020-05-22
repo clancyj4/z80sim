@@ -30,7 +30,7 @@ void show_breaks(gboolean onoff)
   else
     gtk_widget_hide(Breaks);
 
-  gtk_check_menu_item_set_active(breaksmenuitem, onoff);
+  gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(breaksmenuitem), onoff);
 }
 
 
@@ -100,7 +100,7 @@ void init_Breaks()
 }
 
 
-darken_breaks(int line, GtkTextTag *tag)
+void darken_breaks(int line, GtkTextTag *tag)
 {
   GtkTextIter start, end;
 
@@ -120,7 +120,7 @@ darken_breaks(int line, GtkTextTag *tag)
 }
 
 
-highlight_breaks(int line)
+void highlight_breaks(int line)
 {
   GtkTextIter start, end;
 

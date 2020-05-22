@@ -54,9 +54,9 @@ void dump_code_vars()
   printf("+++ CODE +++\n");
   printf("selected_code_line=%d, Selected_Code_Addr=%04X, Code_Selected=%d\n",
          selected_code_line, Selected_Code_Addr, Code_Selected);
-  printf("ram=%04X, SP=%04X, PC=%04X\n",
-	(WORD)ram, (WORD)(STACK - ram),
-	(WORD)(PC - ram));
+  printf("SP=%04X, PC=%04X\n",
+	(unsigned int)(STACK - ram),
+	(unsigned int)(PC - ram));
   do_break("\n");
 //  printf("Codeline table\n"); 
 //  for (i = 0; i < 4; i++) 
@@ -249,9 +249,6 @@ void do_code_highlights(void)
     darken_code(-1, greentag);
     highlight_code(line - buff_lines_start, greentag);	/* highlight the LINE */
   }
-  else
-    printf("EEK! Code line %d not within %ld and %ld\n",
-		line, buff_lines_start, buff_lines_start + CODE_LIST_LENGTH);
 
   /* highlight any selected code */
 
@@ -341,8 +338,8 @@ void Show_Code(BYTE *disas_addr, gboolean force)
     p = Start_Code_List;			/* tmp pointer for disass */
     whole_buffer[0] = 0;			/* rewind to start */
 
-    printf("Starting disassembly from %04X (line=%d) PC=%04X (line=%d)\n",
-	(p - ram), disas_addr_line, (PC - ram), codelines[PC - ram]);
+//    printf("Starting disassembly from %04X (line=%d) PC=%04X (line=%d)\n",
+//	(p - ram), disas_addr_line, (PC - ram), codelines[PC - ram]);
 
     for (line = 0; line < CODE_LIST_LENGTH; line++)
     {

@@ -50,7 +50,8 @@ void show_about(GtkWidget *widget)
 {
   gtk_widget_show(about_win);
   gtk_dialog_run(GTK_DIALOG(about_win));
-  gtk_widget_hide(GTK_DIALOG(about_win));
+//  gtk_widget_hide(GTK_DIALOG(about_win));
+  gtk_widget_hide(about_win);
 }
 
 void Get_File(void)
@@ -58,12 +59,14 @@ void Get_File(void)
   gtk_widget_show(FCwin);
   gtk_dialog_run(GTK_DIALOG(FCwin));
   
-  gtk_widget_hide(GTK_DIALOG(FCwin));
+//  gtk_widget_hide(GTK_DIALOG(FCwin));
+  gtk_widget_hide(FCwin);
 }
 
 void Get_File_Cancel(void)
 {
-  gtk_widget_hide(GTK_DIALOG(FCwin));
+//  gtk_widget_hide(GTK_DIALOG(FCwin));
+  gtk_widget_hide(FCwin);
 }
 
 
@@ -72,7 +75,8 @@ void Get_File_Open(void)
   char *fn;
   fn = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(FCwin));
 
-  gtk_widget_hide(GTK_DIALOG(FCwin));
+//  gtk_widget_hide(GTK_DIALOG(FCwin));
+  gtk_widget_hide(FCwin);
 
   load_z80_code(fn);
 }
@@ -83,13 +87,15 @@ void Get_Project_File(void)
   gtk_widget_show(FPwin);
   gtk_dialog_run(GTK_DIALOG(FPwin));
   
-  gtk_widget_hide(GTK_DIALOG(FPwin));
+//  gtk_widget_hide(GTK_DIALOG(FPwin));
+  gtk_widget_hide(FPwin);
 }
 
 
 void Get_Project_File_Cancel(void)
 {
-  gtk_widget_hide(GTK_DIALOG(FPwin));
+//  gtk_widget_hide(GTK_DIALOG(FPwin));
+  gtk_widget_hide(FPwin);
 }
 
 
@@ -98,7 +104,8 @@ void Get_Project_File_Open(void)
   char *fn;
   fn = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(FPwin));
 
-  gtk_widget_hide(GTK_DIALOG(FPwin));
+//  gtk_widget_hide(GTK_DIALOG(FPwin));
+  gtk_widget_hide(FPwin);
 
   Read_Project(fn);
 }
@@ -131,7 +138,8 @@ void Save_File(void)
   gtk_widget_show(FSwin);
   gtk_dialog_run(GTK_DIALOG(FSwin));
   
-  gtk_widget_hide(GTK_DIALOG(FSwin));
+//  gtk_widget_hide(GTK_DIALOG(FSwin));
+  gtk_widget_hide(FSwin);
 }
 
 
@@ -148,13 +156,15 @@ void Save_File_Save(void)
   }
   strcpy(project_fn, fn);
 
-  gtk_widget_hide(GTK_DIALOG(FSwin));
+//  gtk_widget_hide(GTK_DIALOG(FSwin));
+  gtk_widget_hide(FSwin);
 }
 
 
 void Save_File_Cancel(void)
 {
-  gtk_widget_hide(GTK_DIALOG(FSwin));
+//  gtk_widget_hide(GTK_DIALOG(FSwin));
+  gtk_widget_hide(FSwin);
 }
 
 
@@ -171,6 +181,7 @@ void show_error(char *str)
   gtk_dialog_run(GTK_DIALOG(dialog));
   gtk_widget_destroy(dialog);
 }
+
 
 void Save_Project(char *fn)
 {

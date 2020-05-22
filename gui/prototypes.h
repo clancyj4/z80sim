@@ -61,3 +61,26 @@ int do_break(char *s);
 int do_getfile(char *);
 int exatoi(char *str);
 gint mem_addr_to_row(WORD addr);
+
+void Get_Project_File(void);
+void Save_Project(char *fn);
+void Save_File(void);
+void Get_Project_File_Cancel(void);
+void Save_File_Save(void);
+void Save_File_Cancel(void);
+void Get_Project_File_Open(void);
+void show_iowin(gboolean onoff);
+void assign_in_port_to_buff(int port);
+void show_breaks(gboolean onoff);
+void Breaks_Clicked();
+void pass_value_changed(int pv);
+void Break_Clear_Break();
+void clear_breakpoint(int bp);
+void Dump_IOPort(int port);
+void set_in_queue_buffer(int port);
+void load_z80_code(char *fn);
+void Read_Project(char *fn);
+void darken_breaks(int line, GtkTextTag *tag);
+void highlight_breaks(int line);
+void Dump_IOPort(int port);
+

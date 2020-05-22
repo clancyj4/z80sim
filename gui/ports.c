@@ -12,6 +12,7 @@
 #include "sim.h"
 #include "simglb.h"
 #include "guiglb.h"
+#include "prototypes.h"
 
 static GtkTextBuffer *ioport_textbuffer;
 static GtkTextBuffer *ioportin_textbuffer;
@@ -136,7 +137,7 @@ void show_iowin(gboolean onoff)
   else
     gtk_widget_hide(ioport_win);
 
-  gtk_check_menu_item_set_active(iomenuitem, onoff);
+  gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(iomenuitem), onoff);
 }
 
 
@@ -259,7 +260,7 @@ void init_IOport(void)
   ioinqueue_textbuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(ioinqueuetext));
 
   iofont = pango_font_description_from_string("Monospace");
-  gtk_widget_modify_font(ioporttext, iofont);
+  gtk_widget_override_font(ioporttext, iofont);
 
   /* clear all buffer pointers - they will be allocated as necessary */
 

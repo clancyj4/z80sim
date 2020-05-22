@@ -29,7 +29,7 @@ void dump_memory_vars(void)
   printf("Memory_Selected=%d\n", Memory_Selected);
   printf("Selected_Memory_Addr=%04X Selected_Memory_Content=%02X\n",
 	Selected_Memory_Addr, Selected_Memory_Content);
-  printf("---- MEMORY ----\n", NULL);
+  printf("---- MEMORY ----\n");
 }
 
 void Scroll_Memory(int row)
@@ -351,7 +351,7 @@ void init_Memory(GtkWidget *Main)
   mem_textbuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(memtext));
 
   codefont = pango_font_description_from_string("Monospace");
-  gtk_widget_modify_font(memtext, codefont);
+  gtk_widget_override_font(memtext, codefont);
 
   redtag = gtk_text_buffer_create_tag(mem_textbuffer, "redtag",
         "background", "red", NULL);

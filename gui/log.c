@@ -43,7 +43,7 @@ void show_log(gboolean onoff)
   else
     gtk_widget_hide(Log);
 
-  gtk_check_menu_item_set_active(logmenuitem, onoff);
+  gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(logmenuitem), onoff);
 }
 
 void init_Log(GtkWidget *Main)
@@ -55,6 +55,6 @@ void init_Log(GtkWidget *Main)
   log_textbuffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(logtext));
 
   codefont = pango_font_description_from_string("Monospace");
-  gtk_widget_modify_font(logtext, codefont);
+  gtk_widget_override_font(logtext, codefont);
 }
 

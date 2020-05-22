@@ -73,3 +73,7 @@ extern unsigned long long fp_clock;
 extern WORD fp_led_address;
 extern BYTE fp_led_data;
 #endif
+
+BYTE IOPort_IN(int port);
+void IOPort_OUT(int port, BYTE data);
+void show_breaks_content();
