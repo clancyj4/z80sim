@@ -1915,14 +1915,15 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkRadioButton" id="IOASCII">
-                <property name="label" translatable="yes">ASCII</property>
+              <object class="GtkComboBoxText" id="ASCIIHex">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
-                <property name="active">True</property>
-                <property name="draw_indicator">True</property>
-                <signal name="toggled" handler="on_IOASCII_toggled" swapped="no"/>
+                <property name="can_focus">False</property>
+                <property name="active">0</property>
+                <items>
+                  <item id="1" translatable="yes">ASCII</item>
+                  <item id="2" translatable="yes">Hex</item>
+                </items>
+                <signal name="changed" handler="on_ASCIIHex_changed" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1931,20 +1932,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkRadioButton" id="IOHex">
-                <property name="label" translatable="yes">Hex</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
-                <property name="draw_indicator">True</property>
-                <property name="group">IOASCII</property>
-                <signal name="toggled" handler="on_IOHex_toggled" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
+              <placeholder/>
             </child>
             <child>
               <placeholder/>

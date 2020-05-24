@@ -76,20 +76,13 @@ void Dump_IOPort(int port)
   if (IOPort[port] == NULL)			/* struct exists? */
     return;
 
-//  if (IOPort[port]->ishex)			          /* dump in hex? */
-//  {
-//    gtk_toggle_button_set_active(ioportascii, FALSE);   /*... toggle it off */
-//    printf("turning ioportascii OFF\n");
-//  }
-//  else
-//  {
-//    gtk_toggle_button_set_active(ioportascii, TRUE);   /*... toggle it on */
-//    printf("turning ioportascii ON\n");
-//  }
+  /* set the ASCII and Hex drop entry according to ishex */
+
+  gtk_combo_box_set_active(GTK_COMBO_BOX(ioasciihex), IOPort[port]->ishex);
 
   gtk_spin_button_set_value(GTK_SPIN_BUTTON(ioportspin), port);
 
-  if (IOPort[port]->ishex)			/* dump in hex? */
+  if (IOPort[port]->ishex)			        /* dump in hex? */
   {
     hcount = 0;
     for (i = 0; i < IOPort[port]->out_ptr; i++)

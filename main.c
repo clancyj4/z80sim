@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
   ioinqueuetext = GTK_WIDGET(gtk_builder_get_object(builder, "IO_In_Queue"));
   ioport_win = GTK_WIDGET(gtk_builder_get_object(builder, "IOWIN"));
   ioportspin = GTK_WIDGET(gtk_builder_get_object(builder, "PortSpin"));
-  ioportascii = GTK_WIDGET(gtk_builder_get_object(builder, "IOASCII"));
+  ioasciihex = GTK_WIDGET(gtk_builder_get_object(builder, "ASCIIHex"));
   memtext = GTK_WIDGET(gtk_builder_get_object(builder, "Mem_text"));
   Mem_Addr_Entry = GTK_WIDGET(gtk_builder_get_object(builder, "Mem_Addr_Entry"));
   Mem_Content_Entry = GTK_WIDGET(gtk_builder_get_object(builder, "Mem_Content_Entry"));

@@ -76,7 +76,7 @@ GtkWidget *ioporttext;
 GtkWidget *ioportintext;
 GtkWidget *ioinqueuetext;
 GtkWidget *ioportspin;
-GtkWidget *ioportascii;
+GtkWidget *ioasciihex;
 
 GtkWidget *logtext;
 GtkWidget *Log;

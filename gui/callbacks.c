@@ -499,30 +499,6 @@ on_log1_activate                       (GtkMenuItem     *menuitem,
 
 
 void
-on_IOASCII_toggled                     (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  if (IOPort[current_port] == NULL)	/* toggling a non-existent port? */
-    Create_IOPort_Struct(current_port);	/* strange - but create it anyway */
-
-  IOPort[current_port]->ishex = 0;
-  Dump_IOPort(current_port);
-}
-
-
-void
-on_IOHex_toggled                       (GtkToggleButton *togglebutton,
-                                        gpointer         user_data)
-{
-  if (IOPort[current_port] == NULL)	/* toggling a non-existent port? */
-    Create_IOPort_Struct(current_port);	/* strange - but create it anyway */
-
-  IOPort[current_port]->ishex = 1;
-  Dump_IOPort(current_port);
-}
-
-
-void
 on_PortSpin_value_changed              (GtkSpinButton   *spinbutton,
                                         gpointer         user_data)
 {
@@ -530,8 +506,6 @@ on_PortSpin_value_changed              (GtkSpinButton   *spinbutton,
   printf("current port changed to %d\n", current_port);
   if (IOPort[current_port] == NULL)
     Create_IOPort_Struct(current_port);
-  else
-    printf("Already assigned.\n");
 
   Dump_IOPort(current_port);
 }
@@ -712,3 +686,20 @@ on_Break_Clear_clicked          (GtkButton       *button,
 {
   Break_Clear_Break();
 }
+
+
+void
+on_ASCIIHex_changed            (GtkWidget       *object,
+                                        gpointer         user_data)
+{
+  gint index;
+
+  if (IOPort[current_port] == NULL)	/* toggling a non-existent port? */
+    Create_IOPort_Struct(current_port);	/* strange - but create it anyway */
+
+  index = gtk_combo_box_get_active(GTK_COMBO_BOX(ioasciihex));
+
+  IOPort[current_port]->ishex = index;
+  Dump_IOPort(current_port);
+}
+
