@@ -257,8 +257,14 @@ void init_IOport(void)
 
   /* clear all buffer pointers - they will be allocated as necessary */
 
-  for (i = 0; i < NUMIOPORTS; i++)
-    IOPort[i] = NULL;
+  for (i = 0; i < NUMIOPORTS; i++)                       /* clear up any old allocations */
+  {
+    if (IOPort[i] != NULL)
+      free(IOPort[i]);
+    IOPort[i] = NULL;                                    /* and reset the IOPort pointer */
+  }
+
+  Create_IOPort_Struct(0);                               /* always create port 0 (for project saving) */
 }
 
 

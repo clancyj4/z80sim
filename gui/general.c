@@ -187,6 +187,7 @@ void Save_Project(char *fn)
 {
   FILE *fp;
   int i;
+  WORD temp;
 
   printf("Saving project in %s.\n", fn);
 
@@ -222,11 +223,31 @@ void Save_Project(char *fn)
   fwrite(&L_, sizeof(BYTE), 1, fp);
   fwrite(&R, sizeof(BYTE), 1, fp);
   fwrite(&I, sizeof(BYTE), 1, fp);
-  fwrite(&PC, sizeof(BYTE *), 1, fp);
-  fwrite(&STACK, sizeof(BYTE *), 1, fp);
-  fwrite(&ram, K64K, 1, fp);
+  temp = PC - ram;
+  fwrite(&temp, sizeof(WORD), 1, fp);
+  temp = STACK - ram;
+  fwrite(&temp, sizeof(WORD), 1, fp);
+
   for (i = 0; i < SBSIZE; i++)
     fwrite(&soft[i], sizeof(soft[0]), 1, fp);
+
+  fprintf(fp, "%d\n", current_port);
+  for (i = 0; i < NUMIOPORTS; i++)
+  {
+    if (IOPort[i] != NULL)
+    {
+      fprintf(fp, "%d\n", i);
+      fwrite(IOPort[i]->obuffer, sizeof(IOPort[0]->obuffer), 1, fp);
+      fprintf(fp, "%d\n", IOPort[i]->out_ptr);
+      fwrite(IOPort[i]->ibuffer, sizeof(IOPort[0]->ibuffer), 1, fp);
+      fprintf(fp, "%d\n", IOPort[i]->in_ptr);
+      fprintf(fp, "%d\n", IOPort[i]->in_len);
+      fprintf(fp, "%d\n", IOPort[i]->ishex);
+    }
+  }
+  fprintf(fp, "%d\n", NUMIOPORTS + 1);
+
+  fwrite(&ram, K64K, 1, fp);
 
   fclose(fp);
 }
@@ -236,7 +257,10 @@ void Read_Project(char *fn)
 {
   FILE *fp;
   char str[64];
-  int i;
+  int i, index;
+  WORD temp;
+
+  init_IOport();		/* clear up the IO ports first */
 
   fp = fopen(fn, "r");
   if (fp == NULL)
@@ -276,15 +300,33 @@ void Read_Project(char *fn)
   fread(&L_, sizeof(BYTE), 1, fp);
   fread(&R, sizeof(BYTE), 1, fp);
   fread(&I, sizeof(BYTE), 1, fp);
-  fread(&PC, sizeof(BYTE *), 1, fp);
-  fread(&STACK, sizeof(BYTE *), 1, fp);
-  fread(&ram, K64K, 1, fp);
+  fread(&temp, sizeof(WORD), 1, fp);
+  PC = temp + ram;
+  fread(&temp, sizeof(WORD), 1, fp);
+  STACK = temp + ram;
+
   for (i = 0; i < SBSIZE; i++)
     fread(&soft[i], sizeof(soft[0]), 1, fp);
 
+  fscanf(fp, "%d\n", &current_port);
+  fscanf(fp, "%d\n", &i);
+  while(i != (NUMIOPORTS + 1))
+  {
+    Create_IOPort_Struct(i);
+    fread(&IOPort[i]->obuffer, sizeof(IOPort[0]->obuffer), 1, fp);
+    fscanf(fp, "%d\n", &IOPort[i]->out_ptr);
+    fread(&IOPort[i]->ibuffer, sizeof(IOPort[0]->ibuffer), 1, fp);
+    fscanf(fp, "%d\n", &IOPort[i]->in_ptr);
+    fscanf(fp, "%d\n", &IOPort[i]->in_len);
+    fscanf(fp, "%d\n", &IOPort[i]->ishex);
+    fscanf(fp, "%d\n", &i);
+  }
+
+  fread(&ram, K64K, 1, fp);
 
   build_code_cache();
   Show_Code(PC, TRUE);
+  Dump_IOPort(current_port);
   Show_All();
 
   fclose(fp);

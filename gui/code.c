@@ -45,9 +45,7 @@ static GtkTextTag *redtag, *greentag, *bluetag, *boldtag;
 
 void dump_code_vars()
 {
-//  int i;
   GtkTextIter aniter;
-//  GtkTextMark *mark;
   GdkRectangle coderect;
   int vbuf_start, vbuf_end;
 
@@ -58,9 +56,6 @@ void dump_code_vars()
 	(unsigned int)(STACK - ram),
 	(unsigned int)(PC - ram));
   do_break("\n");
-//  printf("Codeline table\n"); 
-//  for (i = 0; i < 4; i++) 
-//    printf("addr=%04X line=%d\n", i, codelines[i]);
   gtk_text_view_get_visible_rect(GTK_TEXT_VIEW(codetext), &coderect);
   gtk_text_view_get_line_at_y(GTK_TEXT_VIEW(codetext),
 		&aniter, coderect.y, NULL);
@@ -122,8 +117,8 @@ void build_code_cache(void)
   BYTE *p, *oldp;
 
   line = 0;
-  p = PC;
-  while (p < (PC + K64K))			/* scan entire Z80 mem space */
+  p = ram;
+  while (p < (ram + K64K))			/* scan entire Z80 mem space */
   {
     Disass_Str[0] = 0;    			/* reset the disass string */
     oldp = p;					/* get the start point */
