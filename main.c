@@ -52,6 +52,14 @@ int main(int argc, char *argv[])
   ade_entry = GTK_WIDGET(gtk_builder_get_object(builder, "ADE_REG_Entry"));
   ahl_entry = GTK_WIDGET(gtk_builder_get_object(builder, "AHL_REG_Entry"));
   mem_entry = GTK_WIDGET(gtk_builder_get_object(builder, "Mem_REG_Entry"));
+  bc_button = GTK_WIDGET(gtk_builder_get_object(builder, "BC_Button"));
+  de_button = GTK_WIDGET(gtk_builder_get_object(builder, "DE_Button"));
+  hl_button = GTK_WIDGET(gtk_builder_get_object(builder, "HL_Button"));
+  ix_button = GTK_WIDGET(gtk_builder_get_object(builder, "IX_Button"));
+  iy_button = GTK_WIDGET(gtk_builder_get_object(builder, "IY_Button"));
+  pc_button = GTK_WIDGET(gtk_builder_get_object(builder, "PC_Button"));
+  sp_button = GTK_WIDGET(gtk_builder_get_object(builder, "SP_Button"));
+  m_button = GTK_WIDGET(gtk_builder_get_object(builder, "Mem_Button"));
   Log = GTK_WIDGET(gtk_builder_get_object(builder, "Log"));
   logtext = GTK_WIDGET(gtk_builder_get_object(builder, "Log_Text"));
   ioporttext = GTK_WIDGET(gtk_builder_get_object(builder, "IOPortText"));

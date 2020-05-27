@@ -55,7 +55,7 @@ void Update_Memory();
 void Update_Registers(void);
 void Zero_Registers(void);
 void init_Breaks(void);
-
+void set_reg_button(char reg);
 int check_gui_break(void);
 int do_break(char *s);
 int do_getfile(char *);

@@ -356,7 +356,7 @@ void init_Memory(GtkWidget *Main)
   redtag = gtk_text_buffer_create_tag(mem_textbuffer, "redtag",
         "background", "red", NULL);
   greentag = gtk_text_buffer_create_tag(mem_textbuffer, "greentag",
-        "background", "green", NULL);
+        "background", "#88ae41", NULL);
 
   Memory_Selected = FALSE;
 

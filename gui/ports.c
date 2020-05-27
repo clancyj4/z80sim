@@ -105,7 +105,7 @@ void Dump_IOPort(int port)
       bchar = IOPort[port]->obuffer[i];
       if (
 	    (bchar >= 0x20 && bchar < 0x7f)	/* printable? */
-	 || (bchar == 0x0a)
+	 || (bchar == 0x0a) || (bchar == 0x0d)
 	 )
         whole_buffer[ascptr++] = bchar;
       else

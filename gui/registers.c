@@ -16,6 +16,41 @@
 
 WORD Mem_REG;
 
+void set_reg_button(char dreg)
+{
+  switch (dreg)
+  {
+    case 'B':
+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(bc_button), TRUE);
+      break;
+    case 'D':
+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(de_button), TRUE);
+      break;
+    case 'H':
+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(hl_button), TRUE);
+      break;
+    case 'X':
+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ix_button), TRUE);
+      break;
+    case 'Y':
+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(iy_button), TRUE);
+      break;
+    case 'P':
+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(pc_button), TRUE);
+      break;
+    case 'S':
+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(sp_button), TRUE);
+      break;
+    case 'M':
+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(m_button), TRUE);
+      break;
+    default:
+      printf("Illegal dump register %c\n", dreg);
+      break;
+  }
+}
+
+
 void Dump_From_Register(char dreg)
 {
   WORD temp;

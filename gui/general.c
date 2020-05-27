@@ -25,19 +25,16 @@ int check_gui_break(void)
 {
   int i;
 
-  if (cpu_state != CONTIN_RUN)
-  {
-//    fprintf(stderr, "check_gui_break called when cpu_state is not CONTIN\n");
+  if (cpu_state != CONTIN_RUN)					/* no action unless cpu is running continuously */
     return(0);
-  }
 
   if (run_slow)
   {
     for (i = 0; i < run_slow / RUN_SLOW_TICK; i++)
     {
-      usleep(RUN_SLOW_TICK);
-      while (gtk_events_pending())
-        gtk_main_iteration();
+      usleep(RUN_SLOW_TICK);					/* sleep for one slice */
+      while (gtk_events_pending())				/* check for events... */
+        gtk_main_iteration();					/* and act on any pending */
     }
     Show_All();
   }
@@ -50,22 +47,21 @@ void show_about(GtkWidget *widget)
 {
   gtk_widget_show(about_win);
   gtk_dialog_run(GTK_DIALOG(about_win));
-//  gtk_widget_hide(GTK_DIALOG(about_win));
   gtk_widget_hide(about_win);
 }
+
 
 void Get_File(void)
 {
   gtk_widget_show(FCwin);
   gtk_dialog_run(GTK_DIALOG(FCwin));
   
-//  gtk_widget_hide(GTK_DIALOG(FCwin));
   gtk_widget_hide(FCwin);
 }
 
+
 void Get_File_Cancel(void)
 {
-//  gtk_widget_hide(GTK_DIALOG(FCwin));
   gtk_widget_hide(FCwin);
 }
 
@@ -75,7 +71,6 @@ void Get_File_Open(void)
   char *fn;
   fn = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(FCwin));
 
-//  gtk_widget_hide(GTK_DIALOG(FCwin));
   gtk_widget_hide(FCwin);
 
   load_z80_code(fn);
@@ -87,14 +82,12 @@ void Get_Project_File(void)
   gtk_widget_show(FPwin);
   gtk_dialog_run(GTK_DIALOG(FPwin));
   
-//  gtk_widget_hide(GTK_DIALOG(FPwin));
   gtk_widget_hide(FPwin);
 }
 
 
 void Get_Project_File_Cancel(void)
 {
-//  gtk_widget_hide(GTK_DIALOG(FPwin));
   gtk_widget_hide(FPwin);
 }
 
@@ -104,7 +97,6 @@ void Get_Project_File_Open(void)
   char *fn;
   fn = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(FPwin));
 
-//  gtk_widget_hide(GTK_DIALOG(FPwin));
   gtk_widget_hide(FPwin);
 
   Read_Project(fn);
@@ -125,6 +117,8 @@ void load_z80_code(char *fn)
       soft[i].sb_adr = 0;
       soft[i].sb_pass = 0;
     }
+    init_IOport();			  	 /* clear up the IO ports first */
+    Zero_Registers();
     Show_Code(PC, TRUE);
     Do_Code_Reload();
     Show_Registers();
@@ -138,7 +132,6 @@ void Save_File(void)
   gtk_widget_show(FSwin);
   gtk_dialog_run(GTK_DIALOG(FSwin));
   
-//  gtk_widget_hide(GTK_DIALOG(FSwin));
   gtk_widget_hide(FSwin);
 }
 
@@ -156,14 +149,12 @@ void Save_File_Save(void)
   }
   strcpy(project_fn, fn);
 
-//  gtk_widget_hide(GTK_DIALOG(FSwin));
   gtk_widget_hide(FSwin);
 }
 
 
 void Save_File_Cancel(void)
 {
-//  gtk_widget_hide(GTK_DIALOG(FSwin));
   gtk_widget_hide(FSwin);
 }
 
@@ -190,6 +181,8 @@ void Save_Project(char *fn)
   WORD temp;
 
   printf("Saving project in %s.\n", fn);
+
+  strcpy(project_fn, fn);
 
   fp = fopen(fn, "w");
   if (fp == NULL)
@@ -232,8 +225,8 @@ void Save_Project(char *fn)
     fwrite(&soft[i], sizeof(soft[0]), 1, fp);
 
   fprintf(fp, "%d\n", current_port);
+
   for (i = 0; i < NUMIOPORTS; i++)
-  {
     if (IOPort[i] != NULL)
     {
       fprintf(fp, "%d\n", i);
@@ -244,7 +237,7 @@ void Save_Project(char *fn)
       fprintf(fp, "%d\n", IOPort[i]->in_len);
       fprintf(fp, "%d\n", IOPort[i]->ishex);
     }
-  }
+
   fprintf(fp, "%d\n", NUMIOPORTS + 1);
 
   fwrite(&ram, K64K, 1, fp);
@@ -257,7 +250,7 @@ void Read_Project(char *fn)
 {
   FILE *fp;
   char str[64];
-  int i, index;
+  int i;
   WORD temp;
 
   init_IOport();		/* clear up the IO ports first */
@@ -309,6 +302,7 @@ void Read_Project(char *fn)
     fread(&soft[i], sizeof(soft[0]), 1, fp);
 
   fscanf(fp, "%d\n", &current_port);
+
   fscanf(fp, "%d\n", &i);
   while(i != (NUMIOPORTS + 1))
   {
@@ -327,6 +321,7 @@ void Read_Project(char *fn)
   build_code_cache();
   Show_Code(PC, TRUE);
   Dump_IOPort(current_port);
+  set_reg_button(Dump_Reg);
   Show_All();
 
   fclose(fp);
