@@ -1,4 +1,4 @@
-Make sure you have the relevant GTK deveopment libraries installed.
+Make sure you have the relevant GTK development libraries installed.
 
 (libgtk-3-dev on Ubuntu).
 

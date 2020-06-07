@@ -163,7 +163,6 @@ int highlight_memory(WORD begin, GtkTextTag *hightag)
   GtkTextIter start, end;
   int row;
   WORD addr;
-gchar *teststr;
 
   addr = begin & DUMP_ROW_MASK;
   row = mem_addr_to_row(addr);
@@ -179,7 +178,6 @@ gchar *teststr;
   gtk_text_iter_forward_chars(&start, 6 + ((begin - addr) * 3));
   end = start;
   gtk_text_iter_forward_chars(&end, 2);
-teststr=gtk_text_iter_get_text(&start, &end);
 
   gtk_text_buffer_apply_tag(mem_textbuffer, hightag, &start, &end);
 
@@ -189,7 +187,6 @@ teststr=gtk_text_iter_get_text(&start, &end);
   gtk_text_iter_forward_chars(&start, 6 + (MEM_NUMBYTES * 3) + (begin - addr));
   end = start;
   gtk_text_iter_forward_chars(&end, 1);
-teststr=gtk_text_iter_get_text(&start, &end);
   gtk_text_buffer_apply_tag(mem_textbuffer, hightag, &start, &end);
 
   return(row);
@@ -285,7 +282,7 @@ void Show_Memory(WORD begin, int length, gboolean force)
     whole_buffer[0] = '\0';
 
     mptr = begin & DUMP_ADDR_MASK;		/* code addr start */
-    cptr = ram + mptr;				/* get real pointer start */
+    cptr = (char *)(ram + mptr);		/* get real pointer start */
 
     for (cur_line = 0; cur_line < nrows; cur_line++)
     {
@@ -305,7 +302,7 @@ void Show_Memory(WORD begin, int length, gboolean force)
 	tstr);
 
       mptr = (mptr + MEM_NUMBYTES) & 0xffff;		/* wrap round 64 KBytes */
-      cptr = ram + mptr;				/* update real pointer */
+      cptr = (char *)(ram + mptr);			/* update real pointer */
 
       strcat(whole_buffer, Line);			/* Append this line to buffer */
     }

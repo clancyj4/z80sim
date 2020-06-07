@@ -296,16 +296,14 @@ void do_code_highlights(void)
 void Show_Code(BYTE *disas_addr, gboolean force)
 {
   BYTE *p, *isabreak;
-  int line, i, pc_line, pc_row, scrollto, win_offset;
+  int line, i, scrollto;
   unsigned int disas_addr_line;
   char whole_buffer[CODE_LIST_LENGTH*48];
-  char br_char, pc_char;
   WORD code_ptr;
   BYTE *Start_Code_List;
   GtkTextIter aniter;
   GtkTextMark *mark;
   GdkRectangle coderect;
-  gint winx, winy;
   int vbuf_start, vbuf_end, disas_buff_line;
 
   disas_addr_line = codelines[disas_addr - ram];	/* get line from disas addr */

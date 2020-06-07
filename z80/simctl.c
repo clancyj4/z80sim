@@ -57,25 +57,11 @@ void do_step(void);
 void do_trace(char *);
 void do_go(void);
 static int handel_break(void);
-static void do_dump(char *);
-static void do_list(char *);
-static void do_modify(char *);
-static void do_fill(char *);
-static void do_move(char *);
-static void do_port(char *);
-static void do_reg(char *);
 int do_break(char *);
-static void do_hist(char *);
-static void do_count(char *);
-static void do_clock(void);
-static void timeout(int);
-static void do_show(void);
 int do_getfile(char *);
 static int load_mos(int, char *);
 static int load_hex(char *);
 static int checksum(char *);
-static void do_unix(char *);
-static void do_help(void);
 static void cpu_err_msg(void);
 
 struct termios old_term;
@@ -131,25 +117,6 @@ static int handel_break(void)
 }
 
 /*
- *	Disassemble
- */
-static void do_list(char *s)
-{
-	register int i;
-
-	while (isspace((int)*s))
-		s++;
-	if (isxdigit((int)*s))
-		wrk_ram	= ram +	exatoi(s);
-	for (i = 0; i <	10; i++) {
-		printf("%04x - ", (WORD)(wrk_ram - ram));
-		disass(&wrk_ram, wrk_ram - ram);
-		if (wrk_ram > ram + 65535)
-			wrk_ram	= ram;
-	}
-}
-
-/*
  *	Software breakpoints
  */
 int do_break(char *s)
@@ -196,143 +163,6 @@ int do_break(char *s)
 		soft[i].sb_pass	= exatoi(++s);
 	soft[i].sb_passcount = 0;
 	return(0);
-}
-
-/*
- *	History
- */
-static void do_hist(char *s)
-{
-#ifndef	HISIZE
-	puts("Sorry, no history available");
-	puts("Please recompile with HISIZE defined in sim.h");
-#else
-	int i,	l, b, e, c, sa;
-
-	while (isspace((int)*s))
-		s++;
-	switch (*s) {
-	case 'c':
-		memset((char *)	his, 0,	sizeof(struct history) * HISIZE);
-		h_next = 0;
-		h_flag = 0;
-		break;
-	default:
-		if ((h_next == 0) && (h_flag ==	0)) {
-			puts("History memory is empty");
-			break;
-		}
-		e = h_next;
-		b = (h_flag) ? h_next +	1 : 0;
-		l = 0;
-		while (isspace((int)*s))
-			s++;
-		if (*s)
-			sa = exatoi(s);
-		else
-			sa = -1;
-		for (i = b; i != e; i++) {
-			if (i == HISIZE)
-				i = 0;
-			if (sa != -1) {
-				if (his[i].h_adr < sa)
-					continue;
-				else
-					sa = -1;
-			}
-			printf("%04x AF=%04x BC=%04x DE=%04x HL=%04x IX=%04x IY=%04x SP=%04x\n",
-			       his[i].h_adr, his[i].h_af, his[i].h_bc,
-			       his[i].h_de, his[i].h_hl, his[i].h_ix,
-			       his[i].h_iy, his[i].h_sp);
-			l++;
-			if (l == 20) {
-				l = 0;
-				printf("q = quit, else continue: ");
-				c = getkey();
-				putchar('\n');
-				if (toupper(c) == 'Q')
-					break;
-			}
-		}
-		break;
-	}
-#endif
-}
-
-/*
- *	Runtime measurement by counting the executed T states
- */
-static void do_count(char *s)
-{
-#ifndef	WANT_TIM
-	puts("Sorry, no t-state count available");
-	puts("Please recompile with WANT_TIM defined in sim.h");
-#else
-	while (isspace((int)*s))
-		s++;
-	if (*s == '\0')	{
-		puts("start  stop  status  T-states");
-		printf("%04x   %04x    %s   %lu\n",
-		       (WORD)(t_start - ram),
-		       (WORD)(t_end - ram),
-		       t_flag ? "on ": "off", t_states);
-	} else {
-		t_start	= ram +	exatoi(s);
-		while (*s != ',' && *s != '\0')
-			s++;
-		if (*s)
-			t_end =	ram + exatoi(++s);
-		t_states = 0L;
-		t_flag = 0;
-	}
-#endif
-}
-
-/*
- *	Calculate the clock frequency of the emulated CPU:
- *	into memory locations 0000H to 0002H the following
- *	code will be stored:
- *		LOOP: JP LOOP
- *	It uses 10 T states for each execution. A 3 secound
- *	timer is started and then the CPU. For every opcode
- *	fetch the R register is incremented by one and after
- *	the timer is down and stopps the emulation, the clock
- *	speed of the CPU is calculated with:
- *		f = R /	300000
- */
-static void do_clock(void)
-{
-	static BYTE save[3];
-
-	save[0]	= *(ram	+ 0x0000);	/* save memory locations */
-	save[1]	= *(ram	+ 0x0001);	/* 0000H - 0002H */
-	save[2]	= *(ram	+ 0x0002);
-	*(ram +	0x0000)	= 0xc3;		/* store opcode JP 0000H at address */
-	*(ram +	0x0001)	= 0x00;		/* 0000H */
-	*(ram +	0x0002)	= 0x00;
-	PC = ram + 0x0000;		/* set PC to this code */
-	R = 0L;				/* clear refresh register */
-	cpu_state = CONTIN_RUN;		/* initialize CPU */
-	cpu_error = NONE;
-	signal(SIGALRM,	timeout);	/* initialize timer interrupt handler */
-	alarm(3);			/* start 3 secound timer */
-	cpu();				/* start CPU */
-	*(ram +	0x0000)	= save[0];	/* restore memory locations */
-	*(ram +	0x0001)	= save[1];	/* 0000H - 0002H */
-	*(ram +	0x0002)	= save[2];
-	if (cpu_error == NONE)
-		printf("clock frequency = %5.2f Mhz\n",	((float) R) / 300000.0);
-	else
-		puts("Interrupted by user");
-}
-
-/*
- *	This function is the signal handler for the timer interrupt.
- *	The CPU emulation is stopped here.
- */
-static void timeout(int sig)
-{
-	cpu_state = STOPPED;
 }
 
 /*
@@ -511,16 +341,6 @@ static int checksum(char *s)
 		return(0);
 	else
 		return(1);
-}
-
-/*
- *	Call system function from simulator
- */
-static void do_unix(char *s)
-{
-	int_off();
-	system(s);
-	int_on();
 }
 
 /*

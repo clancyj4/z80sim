@@ -1,0 +1,33 @@
+	ORG	0000
+
+	XOR	A
+	RET
+
+	ORG	0100H
+
+	LD	HL,1234H
+	LD	DE,5678H
+	LD	BC,9ABCH
+	LD	A,0BCH
+	EX	AF,AF'
+	LD	A,56H
+	EXX
+	HALT
+
+	RST	00H
+	HALT
+
+	LD	HL,str
+	LD	C,02
+	LD	B,06
+	OTIR
+	HALT
+
+	IN	A,(00)
+	IN	A,(00)
+	IN	A,(00)
+	IN	A,(00)
+	NOP
+	HALT
+
+str:	DEFB	'abcdef'

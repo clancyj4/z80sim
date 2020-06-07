@@ -179,6 +179,7 @@ void Save_Project(char *fn)
   FILE *fp;
   int i;
   WORD temp;
+  char str[64];
 
   printf("Saving project in %s.\n", fn);
 
@@ -227,7 +228,7 @@ void Save_Project(char *fn)
   fprintf(fp, "%d\n", current_port);
 
   for (i = 0; i < NUMIOPORTS; i++)
-    if (IOPort[i] != NULL)
+    if (IOPort[i] != NULL)				/* if the port is active */
     {
       fprintf(fp, "%d\n", i);
       fwrite(IOPort[i]->obuffer, sizeof(IOPort[0]->obuffer), 1, fp);
@@ -238,9 +239,12 @@ void Save_Project(char *fn)
       fprintf(fp, "%d\n", IOPort[i]->ishex);
     }
 
-  fprintf(fp, "%d\n", NUMIOPORTS + 1);
+  fprintf(fp, "%d\n", NUMIOPORTS + 1);			/* terminate the list of io ports */
 
   fwrite(&ram, K64K, 1, fp);
+
+  sprintf(str, "Saved project in %s.\n", fn);
+  Add_to_Log(str);
 
   fclose(fp);
 }
@@ -252,6 +256,7 @@ void Read_Project(char *fn)
   char str[64];
   int i;
   WORD temp;
+  int dbg;
 
   init_IOport();		/* clear up the IO ports first */
 
@@ -301,9 +306,17 @@ void Read_Project(char *fn)
   for (i = 0; i < SBSIZE; i++)
     fread(&soft[i], sizeof(soft[0]), 1, fp);
 
+printf("%04X\n", ftell(fp));
+
   fscanf(fp, "%d\n", &current_port);
 
-  fscanf(fp, "%d\n", &i);
+dbg =  fscanf(fp, "%d\n", &i);
+  if (i == SBSIZE)
+  {
+    printf("failed to read io port list dbg=%d\n", dbg);
+    return;
+  }
+
   while(i != (NUMIOPORTS + 1))
   {
     Create_IOPort_Struct(i);
@@ -317,6 +330,9 @@ void Read_Project(char *fn)
   }
 
   fread(&ram, K64K, 1, fp);
+
+  sprintf(str, "Loaded project from %s.\n", fn);
+  Add_to_Log(str);
 
   build_code_cache();
   Show_Code(PC, TRUE);

@@ -138,7 +138,6 @@ void show_iowin(gboolean onoff)
 
 BYTE IOPort_IN(int port)
 {
-  char whole_buffer[IOINBUFLEN * 3];		/* 3x in case of Hex */
   BYTE c;
 
   if (IOPort[port] == NULL)			/* struct exists? */

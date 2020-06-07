@@ -32,9 +32,9 @@
 
 typedef struct IOPortStruct
 {
-  unsigned char obuffer[IOOUTBUFLEN];
+  char obuffer[IOOUTBUFLEN];
   int out_ptr;
-  unsigned char ibuffer[IOINBUFLEN];
+  char ibuffer[IOINBUFLEN];
   int in_ptr;
   int in_len;
   int ishex;
