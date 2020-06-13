@@ -83,7 +83,6 @@ int main(int argc, char *argv[])
   iomenuitem = GTK_WIDGET(gtk_builder_get_object(builder, "IOMenuItem"));
   breaksmenuitem = GTK_WIDGET(gtk_builder_get_object(builder, "BreaksMenuItem"));
 
-  project_fn = malloc(1024);
   strcpy(project_fn, "untitled.z80sim");
 
   g_object_unref(builder);

@@ -98,7 +98,7 @@ extern GtkWidget *   logmenuitem;
 extern GtkWidget *   iomenuitem;
 extern GtkWidget *   breaksmenuitem;
 
-extern char *project_fn;
+extern char project_fn[1024];
 extern GtkTextBuffer *mem_textbuffer;
 extern gboolean Memory_Selected;
 extern int mem_sel_row, mem_sel_col;

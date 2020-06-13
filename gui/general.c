@@ -1,7 +1,7 @@
 /*
 	Z80 Emulator GUI
 
-	Copyright (C) 2008 Justin Clancy
+	Copyright (C) 2008-2020 Justin Clancy
 */
 
 #include <gtk/gtk.h>
@@ -147,7 +147,6 @@ void Save_File_Save(void)
     Add_to_Log(lstr);
     Save_Project(fn);
   }
-  strcpy(project_fn, fn);
 
   gtk_widget_hide(FSwin);
 }
@@ -194,9 +193,9 @@ void Save_Project(char *fn)
   }
 
   fprintf(fp, "#Z80sim\n");
-  fprintf(fp, "%c\n", Dump_Reg);
-  fprintf(fp, "%d\n", run_slow_pref);
-  fprintf(fp, "%s\n", project_fn);
+  fwrite(&Dump_Reg, sizeof(char), 1, fp);
+  fwrite(&run_slow_pref, sizeof(int), 1, fp);
+  fwrite(&project_fn, 1024, 1, fp);
   fwrite(&A, sizeof(BYTE), 1, fp);
   fwrite(&F, sizeof(BYTE), 1, fp);
   fwrite(&B, sizeof(BYTE), 1, fp);
@@ -256,7 +255,6 @@ void Read_Project(char *fn)
   char str[64];
   int i;
   WORD temp;
-  int dbg;
 
   init_IOport();		/* clear up the IO ports first */
 
@@ -275,9 +273,9 @@ void Read_Project(char *fn)
     show_error(lstr);
   }
 
-  fscanf(fp, "%c\n", &Dump_Reg);
-  fscanf(fp, "%d\n", &run_slow_pref);
-  fgets(project_fn, 1024, fp);
+  fread(&Dump_Reg, sizeof(char), 1, fp);
+  fread(&run_slow_pref, sizeof(int), 1, fp);
+  fread(&project_fn, 1024, 1, fp);
   fread(&A, sizeof(BYTE), 1, fp);
   fread(&F, sizeof(BYTE), 1, fp);
   fread(&B, sizeof(BYTE), 1, fp);
@@ -306,16 +304,9 @@ void Read_Project(char *fn)
   for (i = 0; i < SBSIZE; i++)
     fread(&soft[i], sizeof(soft[0]), 1, fp);
 
-printf("%04X\n", ftell(fp));
-
   fscanf(fp, "%d\n", &current_port);
 
-dbg =  fscanf(fp, "%d\n", &i);
-  if (i == SBSIZE)
-  {
-    printf("failed to read io port list dbg=%d\n", dbg);
-    return;
-  }
+  fscanf(fp, "%d\n", &i);
 
   while(i != (NUMIOPORTS + 1))
   {

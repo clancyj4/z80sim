@@ -61,7 +61,7 @@ GtkWidget *   logmenuitem;
 GtkWidget *   iomenuitem;
 GtkWidget *   breaksmenuitem;
 
-char *project_fn;
+char project_fn[1024];
 GtkTextBuffer *mem_textbuffer;
 gboolean Memory_Selected;
 int mem_sel_row, mem_sel_col;
